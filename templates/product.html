@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/product.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="left">
+
+        <img src="{{ url_for('static', filename='images/iphone.jpg') }}">
+
+    </div>
+
+    <div class="right">
+
+        <h1>iPhone 16 Pro</h1>
+
+        <h2>₹1,19,999</h2>
+
+        <p>⭐⭐⭐⭐⭐ (12,540 Ratings)</p>
+
+        <h3>Description</h3>
+
+        <p>
+            Apple iPhone 16 Pro
+            <br>
+            256GB Storage
+            <br>
+            Black Titanium
+            <br>
+            5G Supported
+        </p>
+
+        <button class="cart">
+            Add To Cart
+        </button>
+
+        <button class="buy">
+            Buy Now
+        </button>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ShopKart</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/home.css') }}">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav>
+
+    <div class="logo">
+
+        <h2>🛒 ShopKart</h2>
+
+    </div>
+
+    <div class="search-box">
+
+        <input
+        type="text"
+        placeholder="Search Products">
+
+        <button>
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+        </button>
+
+    </div>
+
+    <div class="menu">
+
+        <a href="#">Home</a>
+
+        <a href="#">Categories</a>
+
+        <a href="#">Wishlist ❤️</a>
+
+        <a href="#">Cart 🛒</a>
+
+        <a href="#">Profile 👤</a>
+
+    </div>
+
+</nav>
+
+<!-- ================= BANNER ================= -->
+
+<section class="banner">
+
+    <h1>
+
+        Welcome To ShopKart
+
+    </h1>
+
+    <p>
+
+        India's Smart Shopping Destination
+
+    </p>
+
+</section>
+
+<!-- ================= CATEGORIES ================= -->
+
+<section class="category">
+
+    <div class="box">📱 Mobiles</div>
+
+    <div class="box">💻 Laptops</div>
+
+    <div class="box">👕 Fashion</div>
+
+    <div class="box">⌚ Watches</div>
+
+    <div class="box">📺 Electronics</div>
+
+    <div class="box">🛒 Grocery</div>
+
+</section>
+
+<!-- ================= PRODUCTS ================= -->
+
+<h2 class="title">
+
+Featured Products
+
+</h2>
+
+<section class="products">
+
+    <div class="product-card" onclick="window.location.href='/product'">
+
+    <img src="{{ url_for('static', filename='images/iphone.jpg') }}">
+
+    <h3>iPhone 16 Pro</h3>
+
+    <p class="price">₹1,19,999</p>
+
+    <p class="rating">⭐⭐⭐⭐⭐</p>
+
+    <button>Add To Cart</button>
+
+</div>
+
+    </div>
+
+    <div class="product-card">
+
+        <img src="{{ url_for('static', filename='images/samsung.png') }}">
+
+        <h3>Samsung S25 Ultra</h3>
+
+        <p class="price">₹99,999</p>
+
+        <p class="rating">⭐⭐⭐⭐☆</p>
+
+        <button>Add To Cart</button>
+
+    </div>
+
+    <div class="product-card">
+
+        <img src="{{ url_for('static', filename='images/hp.png') }}">
+
+        <h3>HP Laptop</h3>
+
+        <p class="price">₹59,999</p>
+
+        <p class="rating">⭐⭐⭐⭐⭐</p>
+
+        <button>Add To Cart</button>
+
+    </div>
+
+    <div class="product-card">
+
+        <img src="{{ url_for('static', filename='images/boat.jpg') }}">
+
+        <h3>Boat Headphones</h3>
+
+        <p class="price">₹2,499</p>
+
+        <p class="rating">⭐⭐⭐⭐⭐</p>
+
+        <button>Add To Cart</button>
+
+    </div>
+
+</section>
+
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+
+</body>
+
+</html>
