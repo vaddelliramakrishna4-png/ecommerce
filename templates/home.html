@@ -1,172 +1,326 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>ShopKart</title>
-
-    <link rel="stylesheet"
-    href="{{ url_for('static', filename='css/home.css') }}">
-
-    <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
+    <title>RK Mart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
-
 <body>
 
 <!-- ================= NAVBAR ================= -->
-
-<nav>
-
+<nav class="navbar">
     <div class="logo">
-
-        <h2>🛒 ShopKart</h2>
-
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span>RK Mart - Online Shopping</span>
     </div>
 
+    <!-- 🔥 Search Bar with ID for Live Search -->
     <div class="search-box">
-
-        <input
-        type="text"
-        placeholder="Search Products">
-
-        <button>
-
-            <i class="fa-solid fa-magnifying-glass"></i>
-
-        </button>
-
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="search-input" placeholder="Search for products, brands and more">
     </div>
 
-    <div class="menu">
-
-        <a href="#">Home</a>
-
-        <a href="#">Categories</a>
-
-        <a href="#">Wishlist ❤️</a>
-
-        <a href="#">Cart 🛒</a>
-
-        <a href="#">Profile 👤</a>
-
+    <div class="nav-links">
+        <a href="#"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="#"><i class="fa-solid fa-layer-group"></i> Categories</a>
+        <a href="/wishlist"><i class="fa-solid fa-heart"></i> Wishlist</a>
+        <a href="/cart"><i class="fa-solid fa-cart-shopping"></i> Cart <span class="cart-count">0</span></a>
+        
+        <!-- Login Button -->
+        <a href="{{ url_for('login') }}">
+            <i class="fa-solid fa-user"></i> Login
+        </a>
     </div>
-
 </nav>
 
-<!-- ================= BANNER ================= -->
-
-<section class="banner">
-
-    <h1>
-
-        Welcome To ShopKart
-
-    </h1>
-
-    <p>
-
-        India's Smart Shopping Destination
-
-    </p>
-
-</section>
-
-<!-- ================= CATEGORIES ================= -->
-
+<!-- ================= CATEGORIES (WITH ONCLICK FILTER) ================= -->
 <section class="category">
-
-    <div class="box">📱 Mobiles</div>
-
-    <div class="box">💻 Laptops</div>
-
-    <div class="box">👕 Fashion</div>
-
-    <div class="box">⌚ Watches</div>
-
-    <div class="box">📺 Electronics</div>
-
-    <div class="box">🛒 Grocery</div>
-
+    <div class="box" onclick="filterCategory('Mobiles')">📱 Mobiles</div>
+    <div class="box" onclick="filterCategory('Laptops')">💻 Laptops</div>
+    <div class="box" onclick="filterCategory('Fashion')">👕 Fashion</div>
+    <div class="box" onclick="filterCategory('Watches')">⌚ Watches</div>
+    <div class="box" onclick="filterCategory('Electronics')">📺 Electronics</div>
+    <div class="box" onclick="filterCategory('Grocery')">🛒 Grocery</div>
+    <div class="box" onclick="filterCategory('all')" style="background:#2563eb; color:#fff; font-weight:bold;">✨ All Products</div>
 </section>
 
-<!-- ================= PRODUCTS ================= -->
-
-<h2 class="title">
-
-Featured Products
-
-</h2>
-
-<section class="products">
-
-    <div class="product-card" onclick="window.location.href='/product'">
-
-    <img src="{{ url_for('static', filename='images/iphone.jpg') }}">
-
-    <h3>iPhone 16 Pro</h3>
-
-    <p class="price">₹1,19,999</p>
-
-    <p class="rating">⭐⭐⭐⭐⭐</p>
-
-    <button>Add To Cart</button>
-
-</div>
-
+<!-- ================= PREMIUM BANNER ================= -->
+<section class="banner">
+    <div class="banner-content">
+        <span class="offer-tag">
+            🔥 India's No.1 Online Shopping Store
+        </span>
+        <h1>
+            Welcome To <span>RK Mart</span>
+        </h1>
+        <p>
+            Shop the latest Mobiles, Laptops, Fashion, Electronics and more
+            with amazing discounts & fast delivery.
+        </p>
+        <div class="banner-buttons">
+            <button class="shop-btn">Shop Now</button>
+            <button class="explore-btn">Explore Deals</button>
+        </div>
     </div>
-
-    <div class="product-card">
-
-        <img src="{{ url_for('static', filename='images/samsung.png') }}">
-
-        <h3>Samsung S25 Ultra</h3>
-
-        <p class="price">₹99,999</p>
-
-        <p class="rating">⭐⭐⭐⭐☆</p>
-
-        <button>Add To Cart</button>
-
-    </div>
-
-    <div class="product-card">
-
-        <img src="{{ url_for('static', filename='images/hp.png') }}">
-
-        <h3>HP Laptop</h3>
-
-        <p class="price">₹59,999</p>
-
-        <p class="rating">⭐⭐⭐⭐⭐</p>
-
-        <button>Add To Cart</button>
-
-    </div>
-
-    <div class="product-card">
-
-        <img src="{{ url_for('static', filename='images/boat.jpg') }}">
-
-        <h3>Boat Headphones</h3>
-
-        <p class="price">₹2,499</p>
-
-        <p class="rating">⭐⭐⭐⭐⭐</p>
-
-        <button>Add To Cart</button>
-
-    </div>
-
 </section>
+
+<!-- ================= HERO SLIDER ================= -->
+<section class="hero-slider">
+    <div class="slides">
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200&auto=format&fit=crop&q=80" alt="Mega Sale">
+            <div class="hero-content">
+                <span>🔥 MEGA SALE NOW ON</span>
+                <h1>UP TO 80% OFF</h1>
+                <p>Mobiles • Laptops • Fashion • Electronics</p>
+                <button class="slider-btn">Shop Now</button>
+            </div>
+        </div>
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=1200&auto=format&fit=crop&q=80" alt="Electronics">
+            <div class="hero-content">
+                <span>⚡ NEW ARRIVALS</span>
+                <h1>Latest Smartphones & Laptops</h1>
+                <p>iPhone • Samsung • MacBook • OnePlus</p>
+                <button class="slider-btn">Explore Deals</button>
+            </div>
+        </div>
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&auto=format&fit=crop&q=80" alt="Fashion">
+            <div class="hero-content">
+                <span>👗 TRENDING FASHION</span>
+                <h1>Premium Summer Collection</h1>
+                <p>Best Deals Every Day on Top Brands</p>
+                <button class="slider-btn">View Collection</button>
+            </div>
+        </div>
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=1200&auto=format&fit=crop&q=80" alt="Smart TV">
+            <div class="hero-content">
+                <span>📺 HOME ENTERTAINMENT</span>
+                <h1>Smart 4K Android TVs</h1>
+                <p>Sony • LG • Samsung • Xiaomi Dolby Vision</p>
+                <button class="slider-btn">Buy Now</button>
+            </div>
+        </div>
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200&auto=format&fit=crop&q=80" alt="Groceries">
+            <div class="hero-content">
+                <span>🛒 SUPERMARKET DEALS</span>
+                <h1>Daily Needs & Groceries</h1>
+                <p>Up to 50% OFF on Organic Food & Staples</p>
+                <button class="slider-btn">Order Now</button>
+            </div>
+        </div>
+    </div>
+    <!-- Navigation Arrows -->
+    <button class="prev">&#10094;</button>
+    <button class="next">&#10095;</button>
+</section>
+
+<!-- ================= DEALS OF THE DAY ================= -->
+<section class="deals">
+    <div class="section-title">
+        <h2>🔥 Deals of the Day</h2>
+        <p>Grab the best offers before they expire!</p>
+    </div>
+    <div class="deal-container">
+        <!-- Deal 1 -->
+        <div class="deal-card">
+            <span class="discount">-20%</span>
+            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+            <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500" alt="iPhone 16 Pro">
+            <h3>iPhone 16 Pro</h3>
+            <div class="rating">⭐⭐⭐⭐⭐ <span>(4.9)</span></div>
+            <p class="price">₹1,19,999 <span>₹1,39,999</span></p>
+            <button class="buy-btn" onclick='addToCart("iPhone 16 Pro", "119999", "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500")'>Add To Cart</button>
+        </div>
+        <!-- Deal 2 -->
+        <div class="deal-card">
+            <span class="discount">Best Seller</span>
+            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+            <img src="https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500" alt="Samsung S25 Ultra">
+            <h3>Samsung S25 Ultra</h3>
+            <div class="rating">⭐⭐⭐⭐☆ <span>(4.8)</span></div>
+            <p class="price">₹99,999 <span>₹1,09,999</span></p>
+            <button class="buy-btn" onclick='addToCart("Samsung S25 Ultra", "99999", "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500")'>Add To Cart</button>
+        </div>
+        <!-- Deal 3 -->
+        <div class="deal-card">
+            <span class="discount">Top Rated</span>
+            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+            <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=500" alt="HP Pavilion Gaming">
+            <h3>HP Pavilion Gaming</h3>
+            <div class="rating">⭐⭐⭐⭐☆ <span>(4.7)</span></div>
+            <p class="price">₹59,999 <span>₹69,999</span></p>
+            <button class="buy-btn" onclick='addToCart("HP Pavilion Gaming", "59999", "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=500")'>Add To Cart</button>
+        </div>
+        <!-- Deal 4 -->
+        <div class="deal-card">
+            <span class="discount">Limited</span>
+            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" alt="Boat Headphones">
+            <h3>Boat Headphones</h3>
+            <div class="rating">⭐⭐⭐⭐⭐ <span>(4.9)</span></div>
+            <p class="price">₹2,499 <span>₹3,499</span></p>
+            <button class="buy-btn" onclick='addToCart("Boat Headphones", "2499", "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500")'>Add To Cart</button>
+        </div>
+    </div>
+</section>
+
+<!-- ================= RECENTLY ADDED PRODUCTS ================= -->
+{% if products and products|length > 0 %}
+<section class="product-section">
+    <div class="section-title">
+        <h2>🛍️ Recently Added Products</h2>
+        <p>Freshly stocked from our seller dashboard</p>
+    </div>
+    <div class="product-grid">
+        {% for item in products %}
+        <div class="product-card">
+            <span class="badge">{{ item.category }}</span>
+            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+            <img src="{{ item.image }}" alt="{{ item.name }}" style="width: 160px; height: 160px; object-fit: contain; margin: 15px 0;">
+            <h3>{{ item.name }}</h3>
+            <div class="rating">⭐⭐⭐⭐⭐ <span>(5.0)</span></div>
+            <p class="price">₹{{ item.price }}</p>
+            <button class="buy-btn" onclick="addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image }}')">Add To Cart</button>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- ================= TRENDING PRODUCTS ================= -->
+<section class="product-section">
+    <div class="section-title">
+        <h2>🚀 Trending Now</h2>
+        <p>Top viewed and most purchased products this week</p>
+    </div>
+    <div class="product-grid">
+        <div class="product-card">
+            <span class="badge hot">HOT</span>
+            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+            <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500" alt="MacBook Air M3">
+            <h3>MacBook Air M3</h3>
+            <div class="rating">⭐⭐⭐⭐⭐ <span>(5.0)</span></div>
+            <p class="price">₹1,14,999 <span>₹1,34,999</span></p>
+            <button class="buy-btn" onclick='addToCart("MacBook Air M3", "114999", "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500")'>Add To Cart</button>
+        </div>
+        <div class="product-card">
+            <span class="badge hot">HOT</span>
+            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+            <img src="https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500" alt="Sony Bravia 55 TV">
+            <h3>Sony Bravia 55" 4K TV</h3>
+            <div class="rating">⭐⭐⭐⭐☆ <span>(4.6)</span></div>
+            <p class="price">₹54,999 <span>₹74,999</span></p>
+            <button class="buy-btn" onclick='addToCart("Sony Bravia 55 4K TV", "54999", "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500")'>Add To Cart</button>
+        </div>
+        <div class="product-card">
+            <span class="badge">SALE</span>
+            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" alt="Nike Air Max 2026">
+            <h3>Nike Air Max 2026</h3>
+            <div class="rating">⭐⭐⭐⭐⭐ <span>(4.9)</span></div>
+            <p class="price">₹7,999 <span>₹11,999</span></p>
+            <button class="buy-btn" onclick='addToCart("Nike Air Max 2026", "7999", "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500")'>Add To Cart</button>
+        </div>
+        <div class="product-card">
+            <span class="badge hot">HOT</span>
+            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+            <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500" alt="Apple Watch Series 9">
+            <h3>Apple Watch Series 9</h3>
+            <div class="rating">⭐⭐⭐⭐☆ <span>(4.7)</span></div>
+            <p class="price">₹39,999 <span>₹44,999</span></p>
+            <button class="buy-btn" onclick='addToCart("Apple Watch Series 9", "39999", "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500")'>Add To Cart</button>
+        </div>
+    </div>
+</section>
+
+<!-- ================= NEW ARRIVALS ================= -->
+<section class="product-section banner-bg">
+    <div class="section-title">
+        <h2>✨ New Arrivals</h2>
+        <p>Just launched! Be the first one to buy</p>
+    </div>
+    <div class="product-grid">
+        <div class="product-card">
+            <span class="badge new">NEW</span>
+            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+            <img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=500" alt="PlayStation 5 Pro">
+            <h3>PlayStation 5 Pro</h3>
+            <div class="rating">⭐⭐⭐⭐⭐ <span>(5.0)</span></div>
+            <p class="price">₹49,999 <span>₹54,999</span></p>
+            <button class="buy-btn" onclick='addToCart("PlayStation 5 Pro", "49999", "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=500")'>Add To Cart</button>
+        </div>
+        <div class="product-card">
+            <span class="badge new">NEW</span>
+            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+            <img src="https://images.unsplash.com/photo-1507582020474-9a35b7d455d9?w=500" alt="DJI Mini 4 Pro Drone">
+            <h3>DJI Mini 4 Pro Drone</h3>
+            <div class="rating">⭐⭐⭐⭐☆ <span>(4.8)</span></div>
+            <p class="price">₹72,000 <span>₹85,000</span></p>
+            <button class="buy-btn" onclick='addToCart("DJI Mini 4 Pro Drone", "72000", "https://images.unsplash.com/photo-1507582020474-9a35b7d455d9?w=500")'>Add To Cart</button>
+        </div>
+        <div class="product-card">
+            <span class="badge new">NEW</span>
+            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+            <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" alt="Sony Alpha ILCE-7M4">
+            <h3>Sony Alpha ILCE-7M4</h3>
+            <div class="rating">⭐⭐⭐⭐⭐ <span>(4.9)</span></div>
+            <p class="price">₹1,99,999 <span>₹2,20,000</span></p>
+            <button class="buy-btn" onclick='addToCart("Sony Alpha ILCE-7M4", "199999", "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500")'>Add To Cart</button>
+        </div>
+        <div class="product-card">
+            <span class="badge new">NEW</span>
+            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+            <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500" alt="iPad Pro M4">
+            <h3>iPad Pro M4 (2026)</h3>
+            <div class="rating">⭐⭐⭐⭐⭐ <span>(4.9)</span></div>
+            <p class="price">₹99,999 <span>₹1,09,999</span></p>
+            <button class="buy-btn" onclick='addToCart("iPad Pro M4 (2026)", "99999", "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500")'>Add To Cart</button>
+        </div>
+    </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-col">
+            <h3>RK Bazaar 🛒</h3>
+            <p>India's Smart & Fastest Shopping Destination. Best prices, genuine products, and super-fast delivery to your doorstep.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Quick Links</h4>
+            <a href="#">About Us</a>
+            <a href="#">Contact Us</a>
+            <a href="/admin/dashboard">Seller Dashboard</a>
+            <a href="#">My Orders</a>
+        </div>
+        <div class="footer-col">
+            <h4>Categories</h4>
+            <a href="#">Mobiles & Laptops</a>
+            <a href="#">Fashion & Beauty</a>
+            <a href="#">Electronics</a>
+            <a href="#">Home & Kitchen</a>
+        </div>
+        <div class="footer-col">
+            <h4>Newsletter</h4>
+            <p>Subscribe to get special discounts and offers directly to your inbox!</p>
+            <div class="subscribe-box">
+                <input type="email" placeholder="Enter your email">
+                <button>Subscribe</button>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 RK Mart - Online Shopping | Designed by Rama Krishna</p>
+    </div>
+</footer>
 
 <script src="{{ url_for('static', filename='js/home.js') }}"></script>
 
 </body>
-
 </html>

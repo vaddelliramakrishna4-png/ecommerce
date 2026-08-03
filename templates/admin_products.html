@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Products - RK Mart Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body style="background:#0f172a; color:white; font-family:'Poppins', sans-serif; display:flex;">
+    
+    <!-- Sidebar -->
+    <div style="width:250px; padding:20px; background:#1e293b; height:100vh;">
+        <h2>RK Mart Admin</h2>
+        <ul style="list-style:none; padding:0; margin-top:30px;">
+            <li style="margin:15px 0;"><a href="/admin/dashboard" style="color:white; text-decoration:none;"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+            <li style="margin:15px 0;"><a href="/admin/products" style="color:#38bdf8; text-decoration:none;"><i class="fa-solid fa-box"></i> Products</a></li>
+            <li style="margin:15px 0;"><a href="/home" style="color:white; text-decoration:none;"><i class="fa-solid fa-house"></i> Go to Website</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div style="flex:1; padding:40px;">
+        <h1>📦 Manage Products (Delete Option)</h1>
+        <p style="color:#94a3b8; margin-top:10px;">Here you can view or delete listed store products.</p>
+        
+        <div style="margin-top:30px; background:#1e293b; padding:20px; border-radius:10px;">
+            <table style="width:100%; text-align:left; border-collapse:collapse;">
+                <tr style="border-bottom:1px solid #334155;">
+                    <th style="padding:12px;">Product Name</th>
+                    <th style="padding:12px;">Category</th>
+                    <th style="padding:12px;">Price</th>
+                    <th style="padding:12px;">Action</th>
+                </tr>
+                {% for item in products_list %}
+                <tr style="border-bottom:1px solid #334155;">
+                    <td style="padding:12px;">{{ item.name }}</td>
+                    <td style="padding:12px;">{{ item.category }}</td>
+                    <td style="padding:12px;">₹{{ item.price }}</td>
+                    <td style="padding:12px;">
+                        <a href="/admin/delete-product/{{ item.name }}" style="background:#ef4444; color:white; text-decoration:none; padding:6px 14px; border-radius:6px; font-size:14px; font-weight:500;">
+                            <i class="fa-solid fa-trash"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

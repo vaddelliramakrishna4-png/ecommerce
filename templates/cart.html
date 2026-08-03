@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart - RK Mart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo" onclick="window.location.href='/home'" style="cursor:pointer;">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>RK Mart</span>
+        </div>
+        <div class="nav-links">
+            <a href="/home"><i class="fa-solid fa-house"></i> Back to Home</a>
+        </div>
+    </nav>
+
+    <!-- Cart Container -->
+    <div class="cart-container">
+        <h1>🛒 Your Shopping Cart</h1>
+        
+        <div class="cart-content">
+            <!-- Left: Cart Items List -->
+            <div class="cart-items" id="cart-items-container">
+                <!-- JS nunchi products automatic ga indulo load avuthayi -->
+            </div>
+
+            <!-- Right: Price Bill Summary -->
+            <div class="cart-summary">
+                <h3>Price Details</h3>
+                <div class="summary-row">
+                    <span>Total Items Price:</span>
+                    <span id="total-price">₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery Charges:</span>
+                    <span style="color:#16a34a; font-weight:bold;">FREE</span>
+                </div>
+                <hr>
+                <div class="summary-row total-bill">
+                    <span>Total Amount:</span>
+                    <span id="final-price">₹0</span>
+                </div>
+                <button class="checkout-btn" onclick="handleCheckout()">Proceed to Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ADDRESS MODAL (WITH OLD ADDRESS & EDIT OPTIONS) ================= -->
+<div id="addressModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:#fff; padding:30px; border-radius:12px; width:420px; max-width:90%; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+        
+        <!-- View Mode: Old Address Display -->
+        <div id="viewAddressSection">
+            <h2 style="margin-top:0; color:#1e293b;">📍 Delivery Address</h2>
+            <p style="color:#666; font-size:14px; margin-bottom:10px;">We found your saved delivery address:</p>
+            
+            <div id="savedAddressDisplay" style="background:#f8fafc; border:1px solid #cbd5e1; padding:15px; border-radius:8px; margin-bottom:20px; color:#334155; font-weight:500; line-height:1.5;">
+                <!-- JS nunchi old address ikkadiki vasthundi -->
+            </div>
+            
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button type="button" onclick="closeModal()" style="padding:9px 16px; background:#e2e8f0; border:none; border-radius:6px; cursor:pointer; font-weight:500;">Cancel</button>
+                <button type="button" onclick="switchToEditMode()" style="padding:9px 16px; background:#f59e0b; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">Edit Address</button>
+                <button type="button" onclick="placeOrderSuccess()" style="padding:9px 20px; background:#16a34a; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">OK (Place Order)</button>
+            </div>
+        </div>
+
+        <!-- Edit Mode: Form (Initially Hidden) -->
+        <div id="editAddressSection" style="display:none;">
+            <h2 style="margin-top:0; color:#1e293b;">✏️ Enter New Address</h2>
+            <form id="addressForm" onsubmit="saveNewAddressAndOrder(event)">
+                <div style="margin-bottom:12px;">
+                    <label style="display:block; font-size:13px; font-weight:bold; margin-bottom:5px; color:#334155;">Full Name</label>
+                    <input type="text" id="fullName" required style="width:100%; padding:9px; border:1px solid #cbd5e1; border-radius:6px; box-sizing:border-box;">
+                </div>
+                <div style="margin-bottom:12px;">
+                    <label style="display:block; font-size:13px; font-weight:bold; margin-bottom:5px; color:#334155;">Phone Number</label>
+                    <input type="text" id="phone" required style="width:100%; padding:9px; border:1px solid #cbd5e1; border-radius:6px; box-sizing:border-box;">
+                </div>
+                <div style="margin-bottom:15px;">
+                    <label style="display:block; font-size:13px; font-weight:bold; margin-bottom:5px; color:#334155;">Complete Address</label>
+                    <textarea id="fullAddress" required rows="3" style="width:100%; padding:9px; border:1px solid #cbd5e1; border-radius:6px; box-sizing:border-box;"></textarea>
+                </div>
+                
+                <div style="display:flex; justify-content:flex-end; gap:10px;">
+                    <button type="button" onclick="cancelEdit()" style="padding:9px 15px; background:#e2e8f0; border:none; border-radius:6px; cursor:pointer; font-weight:500;">Back</button>
+                    <button type="submit" style="padding:9px 20px; background:#2563eb; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">Save & Place Order</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+    <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+</body>
+</html>

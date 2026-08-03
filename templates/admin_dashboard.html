@@ -1,35 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShopKart Admin Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+    <title>RK Mart Admin Dashboard</title>
+
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
+
 <body>
 
 <div class="sidebar">
-
-    <h2>🛒 ShopKart</h2>
+    <div class="logo">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span>RK Mart Admin</span>
+    </div>
 
     <ul>
-        <li>🏠 Dashboard</li>
-        <li>📦 Products</li>
-        <li onclick="window.location.href='/admin/add-product'">➕ Add Product</li>
-        <li>📂 Categories</li>
-        <li>👥 Users</li>
-        <li>🛒 Orders</li>
-        <li>💳 Payments</li>
-        <li>⭐ Reviews</li>
-        <li>⚙ Settings</li>
-        <li>🚪 Logout</li>
+
+        <li class="active">
+            <i class="fa-solid fa-chart-line"></i>
+            Dashboard
+        </li>
+
+        <li onclick="window.location.href='/add-product'">
+            <i class="fa-solid fa-plus"></i>
+            Add Product
+        </li>
+
+        <li onclick="window.location.href='/admin/products'">
+            <i class="fa-solid fa-box"></i>
+            Products
+        </li>
+
+        <li onclick="window.location.href='/admin/categories'">
+            <i class="fa-solid fa-layer-group"></i>
+            Categories
+        </li>
+
+        <li onclick="window.location.href='/admin/orders'">
+            <i class="fa-solid fa-cart-shopping"></i>
+            Orders
+        </li>
+
+        <li onclick="window.location.href='/admin/customers'">
+            <i class="fa-solid fa-users"></i>
+            Customers
+        </li>
+
+        <li onclick="window.location.href='/admin/payments'">
+            <i class="fa-solid fa-credit-card"></i>
+            Payments
+        </li>
+
+        <li onclick="window.location.href='/admin/reviews'">
+            <i class="fa-solid fa-star"></i>
+            Reviews
+        </li>
+
+        <li onclick="window.location.href='/admin/settings'">
+            <i class="fa-solid fa-gear"></i>
+            Settings
+        </li>
+
     </ul>
 
 </div>
 
-<div class="main">
+<div class="content">
 
-    <h1>Welcome Admin 👋</h1>
+    <div class="topbar">
+
+        <h1>Welcome Back 👋</h1>
+
+        <button class="profile">
+            Admin
+        </button>
+
+    </div>
 
     <div class="cards">
 
@@ -39,18 +95,18 @@
         </div>
 
         <div class="card">
-            <h2>540</h2>
-            <p>Total Orders</p>
-        </div>
-
-        <div class="card">
             <h2>350</h2>
-            <p>Total Users</p>
+            <p>Customers</p>
         </div>
 
         <div class="card">
-            <h2>₹4,80,000</h2>
-            <p>Total Revenue</p>
+            <h2>540</h2>
+            <p>Orders</p>
+        </div>
+
+        <div class="card">
+            <h2>₹4.8L</h2>
+            <p>Revenue</p>
         </div>
 
     </div>

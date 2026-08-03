@@ -1,23 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Admin Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RK Mart  Admin Login</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
 </head>
 
 <body>
 
-<div class="login-box">
+<div class="background">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
 
-    <h1>Admin Login</h1>
+<div class="login-card">
 
-    <input type="text" placeholder="Admin Username">
+    <div class="logo">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <h2>RK Mart</h2>
+        <p>Admin Portal</p>
+    </div>
 
-    <input type="password" placeholder="Password">
+    <form>
 
-    <button onclick="window.location.href='/admin/dashboard'">
-        Login
-    </button>
+        <div class="input-box">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" placeholder="Admin Username">
+        </div>
+
+        <div class="input-box">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" placeholder="Password">
+        </div>
+
+        <button type="button"
+        onclick="window.location.href='/admin/dashboard'">
+
+            Login
+
+        </button>
+
+    </form>
 
 </div>
 

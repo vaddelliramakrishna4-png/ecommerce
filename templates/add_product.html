@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product - RK Mart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/add_product.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>🛒 RK Mart</h2>
+        <ul>
+            <li onclick="window.location.href='/admin/dashboard'"><i class="fa-solid fa-chart-line"></i> Dashboard</li>
+            <li class="active"><i class="fa-solid fa-plus"></i> Add Product</li>
+            <li><i class="fa-solid fa-box"></i> Products</li>
+            <li><i class="fa-solid fa-cart-shopping"></i> Orders</li>
+            <li><i class="fa-solid fa-users"></i> Customers</li>
+            <li><i class="fa-solid fa-right-from-bracket"></i> Logout</li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="top">
+            <h1>Add New Product</h1>
+            <button>Admin</button>
+        </div>
+
+        <div class="card">
+            <!-- Correct Form with POST and enctype -->
+            <form method="POST" action="/add-product" enctype="multipart/form-data">
+                
+                <div class="row">
+                    <div class="input-box">
+                        <label>Product Name</label>
+                        <input type="text" name="product_name" placeholder="Ex: iPhone 16 Pro" required>
+                    </div>
+                    <div class="input-box">
+                        <label>Brand</label>
+                        <input type="text" name="brand" placeholder="Ex: Apple" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-box">
+                        <label>Price (₹)</label>
+                        <input type="number" name="price" placeholder="Ex: 99999" required>
+                    </div>
+                    <div class="input-box">
+                        <label>Stock</label>
+                        <input type="number" name="stock" placeholder="Ex: 25" required>
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label for="category">Product Category:</label>
+                    <select id="category" name="category" onchange="checkCategory(this)" required style="width: 100%; padding: 12px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc;">
+                        <option value="">-- Select Category --</option>
+                        <option value="Mobiles">📱 Mobiles</option>
+                        <option value="Laptops">💻 Laptops</option>
+                        <option value="Fashion">👗 Fashion</option>
+                        <option value="Electronics">🎧 Electronics</option>
+                        <option value="Other">➕ Other (Type Manual)</option>
+                    </select>
+                </div>
+
+                <!-- Manual Category Box (Hidden initially) -->
+                <div class="input-box" id="manual-category-box" style="display: none; margin-top: 10px;">
+                    <label for="manual_category">Enter New Category Name:</label>
+                    <input type="text" id="manual_category" name="manual_category" placeholder="Ex: Home Appliances, Books, Shoes...">
+                </div>
+
+                <div class="input-box" style="margin-top: 15px;">
+                    <label>Description</label>
+                    <textarea name="description" rows="4" placeholder="Enter product description..."></textarea>
+                </div>
+
+                <!-- SINGLE Upload Box -->
+                <div class="upload" style="margin-top: 20px;">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <p>Click here to Upload Product Image</p>
+                    <input type="file" name="product_image" id="imageInput" accept="image/*">
+                    <br><br>
+                    <img id="preview" src="" style="display:none; width:200px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,.2);">
+                </div>
+
+                <!-- Save Button at the VERY BOTTOM -->
+                <button type="submit" class="save" style="margin-top: 25px;">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Product
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/add_product.js') }}"></script>
+<script>
+function checkCategory(selectObject) {
+    let manualBox = document.getElementById("manual-category-box");
+    let manualInput = document.getElementById("manual_category");
+
+    if (selectObject.value === "Other") {
+        manualBox.style.display = "block";
+        manualInput.required = true;
+    } else {
+        manualBox.style.display = "none";
+        manualInput.required = false;
+        manualInput.value = "";
+    }
+}
+</script>
+
+</body>
+</html>

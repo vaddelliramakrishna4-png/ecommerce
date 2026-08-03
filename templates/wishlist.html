@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - RK Bazaar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo" onclick="window.location.href='/home'" style="cursor:pointer;">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>RK Bazaar</span>
+        </div>
+        <div class="nav-links">
+            <a href="/home"><i class="fa-solid fa-house"></i> Back to Home</a>
+        </div>
+    </nav>
+
+    <!-- Wishlist Container -->
+    <div class="cart-container">
+        <h1>❤️ My Wishlist</h1>
+        
+        <div class="cart-content" style="grid-template-columns: 1fr;">
+            <!-- Wishlist Items List -->
+            <div class="cart-items" id="wishlist-items-container">
+                <!-- JS nunchi products automatic ga indulo load avuthayi -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let wishlist = JSON.parse(localStorage.getItem("shopkart_wishlist")) || [];
+        let container = document.getElementById("wishlist-items-container");
+
+        function renderWishlist() {
+            container.innerHTML = "";
+
+            if (wishlist.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-cart" style="text-align:center; padding: 50px;">
+                        <i class="fa-solid fa-heart-crack" style="font-size: 60px; color: #ccc; margin-bottom:15px;"></i>
+                        <h2>Your Wishlist is Empty!</h2>
+                        <p style="color:#666; margin-bottom:20px;">Save your favorite items here to buy later.</p>
+                        <button onclick="window.location.href='/home'" style="background:#2563eb; color:white; padding:10px 25px; border:none; border-radius:25px; cursor:pointer; font-weight:bold;">Explore Products</button>
+                    </div>`;
+                return;
+            }
+
+            wishlist.forEach((item, index) => {
+                container.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="item-details">
+                            <h3>${item.name}</h3>
+                            <p class="price">${item.price}</p>
+                        </div>
+                        <div class="item-total">
+                            <button class="checkout-btn" style="padding: 8px 15px; font-size:14px; margin-bottom:5px;" onclick="moveToCart('${item.name}', '${item.price}', '${item.image}')">Move to Cart</button>
+                            <button class="remove-btn" onclick="removeWishlistItem(${index})"><i class="fa-solid fa-trash"></i> Remove</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function removeWishlistItem(index) {
+            wishlist.splice(index, 1);
+            localStorage.setItem("shopkart_wishlist", JSON.stringify(wishlist));
+            renderWishlist();
+        }
+
+        function moveToCart(name, price, image) {
+            // Cart loki pampadam
+            let cart = JSON.parse(localStorage.getItem("shopkart_cart")) || [];
+            let cleanPrice = Number(price.replace(/[^0-9]/g, ''));
+            cart.push({ name: name, price: cleanPrice, image: image, quantity: 1 });
+            localStorage.setItem("shopkart_cart", JSON.stringify(cart));
+
+            // Wishlist nunchi remove cheyyadam
+            wishlist = wishlist.filter(item => item.name !== name);
+            localStorage.setItem("shopkart_wishlist", JSON.stringify(wishlist));
+
+            alert(`🛒 "${name}" Cart loki move ayyindi!`);
+            renderWishlist();
+        }
+
+        renderWishlist();
+    </script>
+</body>
+</html>
