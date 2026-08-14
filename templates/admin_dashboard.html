@@ -19,9 +19,14 @@
 <body>
 
 <div class="sidebar">
-    <div class="logo">
-        <i class="fa-solid fa-cart-shopping"></i>
-        <span>RK Mart Admin</span>
+    <div class="logo" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+        <div style="display: flex; align-items: center; gap: 10px; color: #38bdf8;">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span style="font-weight: 700; font-size: 20px;">RK Mart Admin</span>
+        </div>
+        <button id="sidebar-close" style="background: none; border: none; color: #ef4444; font-size: 22px; cursor: pointer; display: none;">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
     </div>
 
     <ul>
@@ -79,7 +84,12 @@
 
     <div class="topbar">
 
-        <h1>Welcome Back 👋</h1>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button id="sidebar-toggle" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer; display: none;">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <h1>Welcome Back 👋</h1>
+        </div>
 
         <button class="profile">
             Admin
@@ -112,6 +122,33 @@
     </div>
 
 </div>
+
+<script>
+    const sidebar = document.querySelector('.sidebar');
+    const toggleBtn = document.getElementById('sidebar-toggle');
+    const closeBtn = document.getElementById('sidebar-close');
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.add('mobile-show');
+        });
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            sidebar.classList.remove('mobile-show');
+        });
+    }
+
+    // Close sidebar on background click
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 900) {
+            if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target) && sidebar.classList.contains('mobile-show')) {
+                sidebar.classList.remove('mobile-show');
+            }
+        }
+    });
+</script>
 
 </body>
 </html>

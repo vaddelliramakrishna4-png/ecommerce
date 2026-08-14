@@ -85,3 +85,51 @@ body{
 .buy:hover{
     background:#e65100;
 }
+
+/* ================= RESPONSIVE STYLES ================= */
+@media screen and (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px 15px;
+        width: 95%;
+        margin: 15px auto;
+    }
+
+    .left img {
+        max-width: 100%;
+        height: auto;
+        max-height: 280px;
+    }
+
+    .right {
+        text-align: left;
+    }
+
+    .right h1 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .right h2 {
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+
+    .right p {
+        font-size: 15px;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    .cart,
+    .buy {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+        padding: 14px;
+        font-size: 16px;
+        display: block;
+        text-align: center;
+    }
+}

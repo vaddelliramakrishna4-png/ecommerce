@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - RK Mart</title>
+    <title>Sign Up - RK Mart</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
             </div>
             
             <h2>RK Mart</h2>
-            <p class="subtitle">Welcome Back! Please login to your account.</p>
+            <p class="subtitle">Create your account to start shopping.</p>
 
             <!-- Flash Messages (Error/Success) -->
             {% with messages = get_flashed_messages(with_categories=true) %}
@@ -31,27 +31,30 @@
 
             <form action="{{ url_for('login') }}" method="POST">
                 <div class="input-group">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" name="name" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="input-group">
                     <i class="fa-solid fa-envelope"></i>
                     <input type="email" name="email" placeholder="Enter your email" required>
                 </div>
 
                 <div class="input-group">
                     <i class="fa-solid fa-lock"></i>
-                    <input type="password" name="password" placeholder="Enter your password" required>
+                    <input type="password" name="password" placeholder="Enter password" required>
                 </div>
 
-                <div class="form-options">
-                    <label>
-                        <input type="checkbox" name="remember"> Remember me
-                    </label>
-                    <a href="#" class="forgot-link">Forgot Password?</a>
+                <div class="input-group">
+                    <i class="fa-solid fa-check-double"></i>
+                    <input type="password" name="confirm_password" placeholder="Confirm password" required>
                 </div>
 
-                <button type="submit" class="signin-btn">Sign In</button>
+                <button type="submit" class="signin-btn">Create Account</button>
             </form>
 
             <div class="signup-redirect">
-                <p>Don't have an account? <a href="{{ url_for('signup') }}">Create Account</a></p>
+                <p>Already have an account? <a href="{{ url_for('login') }}">Sign In</a></p>
             </div>
         </div>
     </div>

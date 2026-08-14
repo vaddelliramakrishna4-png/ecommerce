@@ -14,21 +14,31 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <h2>🛒 RK Mart</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h2 style="color: #38bdf8; font-size: 24px; font-weight: 700;">🛒 RK Mart</h2>
+            <button id="sidebar-close" style="background: none; border: none; color: #ef4444; font-size: 22px; cursor: pointer; display: none;">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
         <ul>
             <li onclick="window.location.href='/admin/dashboard'"><i class="fa-solid fa-chart-line"></i> Dashboard</li>
             <li class="active"><i class="fa-solid fa-plus"></i> Add Product</li>
-            <li><i class="fa-solid fa-box"></i> Products</li>
-            <li><i class="fa-solid fa-cart-shopping"></i> Orders</li>
-            <li><i class="fa-solid fa-users"></i> Customers</li>
-            <li><i class="fa-solid fa-right-from-bracket"></i> Logout</li>
+            <li onclick="window.location.href='/admin/products'"><i class="fa-solid fa-box"></i> Products</li>
+            <li onclick="window.location.href='/admin/orders'"><i class="fa-solid fa-cart-shopping"></i> Orders</li>
+            <li onclick="window.location.href='/admin/customers'"><i class="fa-solid fa-users"></i> Customers</li>
+            <li onclick="window.location.href='/admin'"><i class="fa-solid fa-right-from-bracket"></i> Logout</li>
         </ul>
     </div>
 
     <!-- Main Content -->
     <div class="content">
         <div class="top">
-            <h1>Add New Product</h1>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button id="sidebar-toggle" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer; display: none;">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h1>Add New Product</h1>
+            </div>
             <button>Admin</button>
         </div>
 
@@ -117,6 +127,33 @@ function checkCategory(selectObject) {
         manualInput.value = "";
     }
 }
+</script>
+
+<script>
+    const sidebar = document.querySelector('.sidebar');
+    const toggleBtn = document.getElementById('sidebar-toggle');
+    const closeBtn = document.getElementById('sidebar-close');
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.add('mobile-show');
+        });
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            sidebar.classList.remove('mobile-show');
+        });
+    }
+
+    // Close sidebar on background click
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 900) {
+            if (sidebar && !sidebar.contains(e.target) && toggleBtn && !toggleBtn.contains(e.target) && sidebar.classList.contains('mobile-show')) {
+                sidebar.classList.remove('mobile-show');
+            }
+        }
+    });
 </script>
 
 </body>

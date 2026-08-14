@@ -75,3 +75,126 @@ body { background:#f1f5f9; }
 .checkout-btn:active {
     transform: scale(0.97);
 }
+
+/* ================= MOBILE BOTTOM NAVIGATION & RESPONSIVENESS ================= */
+
+/* Mobile Bottom Navigation Bar Styles */
+.mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: #1f2937;
+    display: none;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, .25);
+    z-index: 1000;
+    border-top: 1px solid #2d3748;
+}
+
+.mobile-bottom-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 500;
+    transition: 0.3s;
+    position: relative;
+    flex: 1;
+    padding: 8px 0;
+}
+
+.mobile-bottom-nav a i {
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.mobile-bottom-nav a.active {
+    color: #38bdf8;
+}
+
+.mobile-bottom-nav .cart-count {
+    position: absolute;
+    top: 2px;
+    right: 22%;
+    background: #ff3b30;
+    color: white;
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 50%;
+    font-weight: bold;
+    min-width: 16px;
+    text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        padding-bottom: 70px; /* Space for mobile bottom nav */
+    }
+
+    .mobile-bottom-nav {
+        display: flex; /* Show bottom nav on mobile */
+    }
+
+    .navbar {
+        padding: 12px 20px;
+    }
+
+    .cart-container {
+        margin: 20px auto;
+        padding: 0 10px;
+    }
+
+    .cart-container h1 {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        position: relative;
+        padding: 20px 0;
+    }
+
+    .cart-item img {
+        width: 70px;
+        height: 70px;
+        align-self: center;
+    }
+
+    .item-details {
+        margin-left: 0;
+        width: 100%;
+        text-align: center;
+    }
+
+    .qty-box {
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .item-total {
+        width: 100%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .remove-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+        width: 100%;
+        max-width: 200px;
+        display: block;
+        margin: 0 auto;
+    }
+}

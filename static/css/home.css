@@ -187,22 +187,25 @@ body {
 ========================================== */
 .category {
     width: 95%;
-    margin: 40px auto;
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 20px;
+    margin: 30px auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
 }
 
 .box {
     background: #fff;
     border-radius: 18px;
-    padding: 25px;
+    padding: 18px 25px;
     text-align: center;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: .35s;
     box-shadow: 0 8px 20px rgba(0, 0, 0, .08);
+    flex: 1 1 140px;
+    max-width: 200px;
 }
 
 .box:hover {
@@ -552,108 +555,301 @@ body {
     font-size: 14px;
 }
 
-/* ================= RESPONSIVE DESIGN ================= */
-@media (max-width: 900px) {
-    .deal-container, .product-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
+/* ================= RESPONSIVE DESIGN & MOBILE OPTIMIZATIONS ================= */
 
-@media (max-width: 500px) {
-    .deal-container, .product-grid {
-        grid-template-columns: 1fr;
-    }
-}
-/* ================= HERO CONTENT & GRADIENT OVERLAY ================= */
-.hero-content {
-    position: absolute;
-    top: 50%;
-    left: 8%;
-    transform: translateY(-50%);
-    color: white;
-    z-index: 3;
-    max-width: 550px;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-}
-
-.hero-content span {
-    background: #ff3b30;
-    color: white;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: bold;
-    display: inline-block;
-    margin-bottom: 15px;
-    box-shadow: 0 4px 10px rgba(255, 59, 48, 0.4);
-}
-
-.hero-content h1 {
-    font-size: 50px;
-    font-weight: 800;
-    line-height: 1.2;
-    margin-bottom: 15px;
-    color: #ffffff;
-}
-
-.hero-content p {
-    font-size: 18px;
-    margin-bottom: 25px;
-    color: #e2e8f0;
-}
-
-.slider-btn {
-    padding: 14px 35px;
-    font-size: 16px;
-    font-weight: bold;
-    background: linear-gradient(45deg, #2563eb, #38bdf8);
-    color: white;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.5);
-    transition: 0.3s;
-}
-
-.slider-btn:hover {
-    transform: translateY(-3px) scale(1.05);
-    background: linear-gradient(45deg, #1d4ed8, #0284c7);
-}
-
-/* Image meedha Dark Overlay appude text super ga kanipistundi */
-.slide::after {
-    content: "";
-    position: absolute;
-    top: 0;
+/* Mobile Bottom Navigation Bar Styles */
+.mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%);
-    z-index: 1;
+    height: 60px;
+    background: #1f2937;
+    display: none;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, .25);
+    z-index: 1000;
+    border-top: 1px solid #2d3748;
 }
 
-.slide img {
+.mobile-bottom-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 500;
+    transition: 0.3s;
     position: relative;
-    z-index: 0;
+    flex: 1;
+    padding: 8px 0;
 }
-/* ================= MOBILE RESPONSIVE FIX ================= */
-@media screen and (max-width: 768px) {
-    /* Product cards grid ni mobile lo set cheyadaniki */
-    .product-grid, .deals-grid, .category-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr); /* Mobile lo side-by-side 2 cards vachela */
-        gap: 10px;
-        padding: 10px;
-    }
 
-    /* Prathi product card size mobile ki thagtu adjust avvadaniki */
-    .product-card, .deal-card {
-        width: 100%;
-        margin: 0 auto;
+.mobile-bottom-nav a i {
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.mobile-bottom-nav a.active {
+    color: #38bdf8;
+}
+
+.mobile-bottom-nav .cart-count {
+    position: absolute;
+    top: 2px;
+    right: 22%;
+    background: #ff3b30;
+    color: white;
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 50%;
+    font-weight: bold;
+    min-width: 16px;
+    text-align: center;
+}
+
+/* RESPONSIVE MEDIA QUERIES */
+
+@media screen and (max-width: 1024px) {
+    .navbar {
+        padding: 16px 30px;
     }
     
+    .search-box {
+        width: 400px;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .category {
+        width: 95%;
+        margin: 25px auto;
+    }
+
+    .deal-container {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+    
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        padding-bottom: 60px; /* Space for the bottom nav bar */
+    }
+
+    .mobile-bottom-nav {
+        display: flex; /* Show bottom nav on mobile */
+    }
+
+    /* Navbar adjustment */
+    .navbar {
+        padding: 10px 12px;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .logo {
+        font-size: 15px;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+    
+    .logo span {
+        display: none; /* Hide desktop subtext */
+    }
+    
+    .logo::after {
+        content: "RK Mart";
+        font-weight: 700;
+        color: #38bdf8;
+    }
+
+    .nav-links {
+        display: flex !important;
+        gap: 0;
+        flex-shrink: 0;
+    }
+
+    /* Hide non-login items in nav-links on mobile */
+    .nav-links a:not([href*="login"]) {
+        display: none !important;
+    }
+
+    .nav-links a[href*="login"] {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        font-weight: 700;
+        background: linear-gradient(45deg, #2563eb, #38bdf8);
+        padding: 6px 10px;
+        border-radius: 20px;
+        color: white;
+        text-decoration: none;
+        box-shadow: 0 3px 8px rgba(37, 99, 235, 0.3);
+    }
+
+    .search-box {
+        flex: 1;
+        width: auto !important;
+        order: unset !important;
+        padding: 8px 12px;
+        font-size: 13px;
+        border-radius: 20px;
+    }
+
+    /* Category horizontal scrolling (Full Width) */
+    .category {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding: 5px 12px;
+        margin: 15px 0 !important;
+        gap: 10px;
+        width: 100% !important;
+        border-radius: 0 !important;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .category::-webkit-scrollbar {
+        display: none;
+    }
+
+    .box {
+        flex: 0 0 auto;
+        min-width: 110px;
+        padding: 12px 15px;
+        font-size: 13px;
+        border-radius: 12px;
+    }
+
+    /* Hero Slider scaling (Full Width) */
+    .hero-slider {
+        height: 220px;
+        border-radius: 0 !important;
+        width: 100% !important;
+        margin: 10px 0 25px 0 !important;
+    }
+
+    .hero-content {
+        left: 6%;
+        max-width: 80%;
+    }
+
+    .hero-content span {
+        font-size: 10px;
+        padding: 4px 10px;
+        margin-bottom: 8px;
+    }
+
+    .hero-content h1 {
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+
+    .hero-content p {
+        font-size: 12px;
+        margin-bottom: 15px;
+    }
+
+    .slider-btn {
+        padding: 8px 20px;
+        font-size: 12px;
+    }
+
+    .prev, .next {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+
+    /* Banner section */
+    .banner {
+        padding: 40px 15px;
+    }
+
+    .banner h1 {
+        font-size: 32px;
+    }
+
+    .banner p {
+        font-size: 14px;
+        line-height: 22px;
+        margin-bottom: 20px;
+    }
+
+    .shop-btn, .explore-btn {
+        padding: 10px 22px;
+        font-size: 14px;
+    }
+
+    /* Product Grids - Double Column for e-commerce native feel */
+    .deal-container, .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        padding: 5px;
+    }
+
+    .product-card, .deal-card {
+        padding: 12px;
+        border-radius: 12px;
+    }
+
     .product-card img, .deal-card img {
-        height: 120px; /* Mobile lo image size neat ga undataniki */
-        object-fit: contain;
+        height: 120px;
+        margin: 10px auto;
+    }
+
+    .product-card h3, .deal-card h3 {
+        font-size: 14px;
+        margin: 8px 0;
+    }
+
+    .price {
+        font-size: 16px;
+    }
+
+    .price span {
+        font-size: 11px;
+    }
+
+    .product-card button, .deal-card button, .buy-btn {
+        padding: 10px;
+        font-size: 13px;
+        border-radius: 20px;
+        margin: 8px auto;
+    }
+
+    /* Footer styling */
+    .footer {
+        padding: 40px 15px 80px; /* Extra padding bottom for bottom nav */
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .deal-container, .product-grid {
+        grid-template-columns: repeat(2, 1fr); /* Keep it 2 columns even for small devices to look like modern app store */
+        gap: 8px;
+    }
+    
+    .box {
+        min-width: 100px;
+        font-size: 12px;
     }
 }

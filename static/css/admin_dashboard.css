@@ -143,3 +143,75 @@ margin-bottom:15px;
 color:#cbd5e1;
 
 }
+
+/* ================= RESPONSIVE STYLES ================= */
+
+#sidebar-toggle {
+    display: none;
+}
+
+#sidebar-close {
+    display: none;
+}
+
+@media screen and (max-width: 900px) {
+    .sidebar {
+        left: -280px;
+        position: fixed;
+        top: 0;
+        z-index: 1000;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    .sidebar.mobile-show {
+        left: 0 !important;
+    }
+
+    #sidebar-close {
+        display: block !important;
+    }
+
+    #sidebar-toggle {
+        display: block !important;
+    }
+
+    .content {
+        margin-left: 0;
+        padding: 25px 20px;
+    }
+
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .card {
+        padding: 25px;
+    }
+    
+    .card h2 {
+        font-size: 28px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .topbar h1 {
+        font-size: 22px;
+    }
+
+    .profile {
+        padding: 8px 18px;
+        font-size: 14px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+}

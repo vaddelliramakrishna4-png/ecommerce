@@ -16,11 +16,11 @@
         <span>RK Mart - Online Shopping</span>
     </div>
 
-    <!-- 🔥 Search Bar with ID for Live Search -->
-    <div class="search-box">
+    <!-- 🔥 UPDATED: Search Box wrapped in a Form for Server-Side Redirection -->
+    <form action="{{ url_for('search') }}" method="GET" class="search-box">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="search-input" placeholder="Search for products, brands and more">
-    </div>
+        <input type="text" name="q" id="search-input" placeholder="Search for products, brands and more" required>
+    </form>
 
     <div class="nav-links">
         <a href="#"><i class="fa-solid fa-house"></i> Home</a>
@@ -289,7 +289,7 @@
 <footer class="footer">
     <div class="footer-container">
         <div class="footer-col">
-            <h3>RK Bazaar 🛒</h3>
+            <h3>RK Mart 🛒</h3>
             <p>India's Smart & Fastest Shopping Destination. Best prices, genuine products, and super-fast delivery to your doorstep.</p>
         </div>
         <div class="footer-col">
@@ -319,6 +319,15 @@
         <p>&copy; 2026 RK Mart - Online Shopping | Designed by Rama Krishna</p>
     </div>
 </footer>
+
+<!-- Mobile Bottom Navigation Bar -->
+<div class="mobile-bottom-nav">
+    <a href="/home" class="active"><i class="fa-solid fa-house"></i><span>Home</span></a>
+    <a href="#" onclick="filterCategory('all')"><i class="fa-solid fa-layer-group"></i><span>Categories</span></a>
+    <a href="/wishlist"><i class="fa-solid fa-heart"></i><span>Wishlist</span></a>
+    <a href="/cart"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span><span class="cart-count">0</span></a>
+    <a href="/login"><i class="fa-solid fa-user"></i><span>Login</span></a>
+</div>
 
 <script src="{{ url_for('static', filename='js/home.js') }}"></script>
 

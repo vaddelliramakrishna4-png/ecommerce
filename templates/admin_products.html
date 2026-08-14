@@ -2,50 +2,274 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Products - RK Mart Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background: #0f172a;
+            color: white;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: #111827;
+            padding: 30px 20px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 5px 0 25px rgba(0,0,0,.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+        .sidebar h2 {
+            color: #38bdf8;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .sidebar ul {
+            list-style: none;
+            margin-top: 30px;
+        }
+        .sidebar li {
+            margin-bottom: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: .35s;
+        }
+        .sidebar li:hover {
+            background: #2563eb;
+            transform: translateX(8px);
+        }
+        .sidebar li.active {
+            background: #2563eb;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            font-weight: 500;
+            width: 100%;
+        }
+        #sidebar-close {
+            display: none;
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 22px;
+            cursor: pointer;
+        }
+        /* Content */
+        .content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 40px;
+            transition: all 0.3s ease;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .topbar h1 {
+            font-size: 30px;
+        }
+        #sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .table-container {
+            margin-top: 30px;
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            text-align: left;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+        tr {
+            border-bottom: 1px solid #334155;
+        }
+        tr:last-child {
+            border-bottom: none;
+        }
+        th, td {
+            padding: 16px;
+        }
+        th {
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        td {
+            color: #cbd5e1;
+            font-size: 15px;
+        }
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.3s;
+        }
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        /* Media Queries */
+        @media screen and (max-width: 900px) {
+            .sidebar {
+                left: -280px;
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+            }
+            .sidebar.mobile-show {
+                left: 0;
+            }
+            #sidebar-close {
+                display: block;
+            }
+            #sidebar-toggle {
+                display: block;
+            }
+            .content {
+                margin-left: 0;
+                padding: 25px 15px;
+            }
+            .topbar h1 {
+                font-size: 24px;
+            }
+            .table-container {
+                padding: 15px;
+            }
+            th, td {
+                padding: 12px 10px;
+            }
+        }
+    </style>
 </head>
-<body style="background:#0f172a; color:white; font-family:'Poppins', sans-serif; display:flex;">
+<body>
     
     <!-- Sidebar -->
-    <div style="width:250px; padding:20px; background:#1e293b; height:100vh;">
-        <h2>RK Mart Admin</h2>
-        <ul style="list-style:none; padding:0; margin-top:30px;">
-            <li style="margin:15px 0;"><a href="/admin/dashboard" style="color:white; text-decoration:none;"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
-            <li style="margin:15px 0;"><a href="/admin/products" style="color:#38bdf8; text-decoration:none;"><i class="fa-solid fa-box"></i> Products</a></li>
-            <li style="margin:15px 0;"><a href="/home" style="color:white; text-decoration:none;"><i class="fa-solid fa-house"></i> Go to Website</a></li>
+    <div class="sidebar">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>🛒 RK Mart Admin</h2>
+            <button id="sidebar-close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <ul>
+            <li>
+                <a href="/admin/dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            </li>
+            <li class="active">
+                <a href="/admin/products"><i class="fa-solid fa-box"></i> Products</a>
+            </li>
+            <li>
+                <a href="/home"><i class="fa-solid fa-house"></i> Go to Website</a>
+            </li>
         </ul>
     </div>
 
     <!-- Main Content -->
-    <div style="flex:1; padding:40px;">
-        <h1>📦 Manage Products (Delete Option)</h1>
-        <p style="color:#94a3b8; margin-top:10px;">Here you can view or delete listed store products.</p>
+    <div class="content">
+        <div class="topbar">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button id="sidebar-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h1>📦 Manage Products</h1>
+            </div>
+            <p style="color:#94a3b8; font-size: 14px; display: none;" class="desktop-only">Delete store products instantly</p>
+        </div>
+
+        <p style="color:#94a3b8; margin-bottom: 20px;">Here you can view or delete listed store products.</p>
         
-        <div style="margin-top:30px; background:#1e293b; padding:20px; border-radius:10px;">
-            <table style="width:100%; text-align:left; border-collapse:collapse;">
-                <tr style="border-bottom:1px solid #334155;">
-                    <th style="padding:12px;">Product Name</th>
-                    <th style="padding:12px;">Category</th>
-                    <th style="padding:12px;">Price</th>
-                    <th style="padding:12px;">Action</th>
-                </tr>
-                {% for item in products_list %}
-                <tr style="border-bottom:1px solid #334155;">
-                    <td style="padding:12px;">{{ item.name }}</td>
-                    <td style="padding:12px;">{{ item.category }}</td>
-                    <td style="padding:12px;">₹{{ item.price }}</td>
-                    <td style="padding:12px;">
-                        <a href="/admin/delete-product/{{ item.name }}" style="background:#ef4444; color:white; text-decoration:none; padding:6px 14px; border-radius:6px; font-size:14px; font-weight:500;">
-                            <i class="fa-solid fa-trash"></i> Delete
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in products_list %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.category }}</td>
+                        <td>₹{{ item.price }}</td>
+                        <td>
+                            <a href="/admin/delete-product/{{ item.name }}" class="btn-delete">
+                                <i class="fa-solid fa-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>
+
+    <script>
+        const sidebar = document.querySelector('.sidebar');
+        const toggleBtn = document.getElementById('sidebar-toggle');
+        const closeBtn = document.getElementById('sidebar-close');
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.add('mobile-show');
+            });
+        }
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                sidebar.classList.remove('mobile-show');
+            });
+        }
+
+        // Close sidebar on background click
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 900) {
+                if (sidebar && !sidebar.contains(e.target) && toggleBtn && !toggleBtn.contains(e.target) && sidebar.classList.contains('mobile-show')) {
+                    sidebar.classList.remove('mobile-show');
+                }
+            }
+        });
+    </script>
 
 </body>
 </html>

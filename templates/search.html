@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - RK Mart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">
+        <a href="/home" style="color:inherit; text-decoration:none;"><i class="fa-solid fa-cart-shopping"></i> <span>RK Mart</span></a>
+    </div>
+    <form action="{{ url_for('search') }}" method="GET" class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" name="q" value="{{ query }}" placeholder="Search for products, brands and more" required>
+    </form>
+    <div class="nav-links">
+        <a href="/home"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="/cart"><i class="fa-solid fa-cart-shopping"></i> Cart</a>
+    </div>
+</nav>
+
+<section class="product-section" style="padding: 40px 20px;">
+    <div class="section-title">
+        <h2>🔍 Search Results for "{{ query }}"</h2>
+        <p>Found {{ products|length }} products matching your search</p>
+    </div>
+
+    {% if products and products|length > 0 %}
+    <div class="product-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto;">
+        {% for item in products %}
+        <div class="product-card" style="background:#fff; padding:15px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); text-align:center;">
+            <img src="{{ item.image }}" alt="{{ item.name }}" style="width: 160px; height: 160px; object-fit: contain; margin: 15px auto;">
+            <h3>{{ item.name }}</h3>
+            <div class="rating">⭐⭐⭐⭐⭐ <span>(4.8)</span></div>
+            <p class="price" style="color:#2563eb; font-weight:bold; font-size:18px; margin:10px 0;">₹{{ item.price }}</p>
+            <button class="buy-btn" onclick="addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image }}')" style="background:#2563eb; color:#white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer; width:100%;">Add To Cart</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align:center; padding: 50px;">
+        <h3 style="color:#64748b;">No products found matching "{{ query }}" ❌</h3>
+        <a href="/home" style="display:inline-block; margin-top:15px; background:#2563eb; color:#fff; padding:10px 20px; border-radius:5px; text-decoration:none;">Back to Home</a>
+    </div>
+    {% endif %}
+</section>
+
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+</body>
+</html>

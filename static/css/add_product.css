@@ -228,26 +228,71 @@ body{
 
 }
 
-/* Responsive */
+/* Responsive & Mobile Support */
+
+#sidebar-toggle {
+    display: none;
+}
+
+#sidebar-close {
+    display: none;
+}
 
 @media(max-width:900px){
+    .sidebar {
+        left: -280px;
+        position: fixed;
+        top: 0;
+        z-index: 1000;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+        height: 100vh;
+        display: block !important; /* Override desktop fixed styles */
+    }
 
-.sidebar{
+    .sidebar.mobile-show {
+        left: 0 !important;
+    }
 
-display:none;
+    #sidebar-close {
+        display: block !important;
+    }
 
+    #sidebar-toggle {
+        display: block !important;
+    }
+
+    .content {
+        margin-left: 0;
+        padding: 25px 15px;
+    }
+
+    .row {
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .card {
+        padding: 25px 15px;
+    }
 }
 
-.content{
+@media(max-width:480px){
+    .top h1 {
+        font-size: 24px;
+    }
 
-margin-left:0;
+    .top button {
+        padding: 8px 20px;
+        font-size: 13px;
+    }
 
-}
+    .upload {
+        padding: 25px 15px;
+    }
 
-.row{
-
-flex-direction:column;
-
-}
-
+    .upload i {
+        font-size: 38px;
+    }
 }
