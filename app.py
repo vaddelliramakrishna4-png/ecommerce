@@ -604,11 +604,10 @@ def add_product():
         if category == "Other":
             category = request.form.get("manual_category")
 
-        # Process uploaded files (supports multiple product images)
-        uploaded_files = request.files.getlist("product_images")
+        # Process uploaded files (supports 4 individual image upload slots)
         image_urls = []
-        
-        for file in uploaded_files:
+        for i in range(1, 5):
+            file = request.files.get(f"product_image_{i}")
             if file and file.filename != '':
                 image_name = file.filename
                 image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_name)
