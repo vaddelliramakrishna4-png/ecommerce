@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - RK Mart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/home" class="logo">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>RK Mart</span>
+        </a>
+        <div class="nav-links">
+            <a href="/profile"><i class="fa-solid fa-user"></i> My Account</a>
+            <a href="/home" style="margin-left:15px;"><i class="fa-solid fa-house"></i> Home</a>
+        </div>
+    </nav>
+
+    <!-- Profile Container -->
+    <div class="profile-container">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; flex-wrap:wrap; gap:15px;">
+            <h1 style="margin-bottom:0;"><i class="fa-solid fa-clock-rotate-left" style="color: #2563eb;"></i> My Orders</h1>
+            <a href="/profile" style="color:#2563eb; text-decoration:none; font-weight:600; font-size:15px;"><i class="fa-solid fa-arrow-left"></i> Back to Account</a>
+        </div>
+
+        {% if not orders %}
+        <!-- Empty State -->
+        <div class="empty-orders">
+            <i class="fa-solid fa-box-open"></i>
+            <h2>No Orders Found</h2>
+            <p>You haven't placed any orders yet. Start shopping and place your first order!</p>
+            <a href="/home" class="shop-btn">Shop Now</a>
+        </div>
+        {% else %}
+        <!-- Orders List -->
+        <div class="orders-list">
+            {% for order in orders %}
+            <div class="order-card">
+                
+                <!-- Order Header -->
+                <div class="order-header">
+                    <div class="order-meta">
+                        <h3>Order ID: {{ order.order_id }}</h3>
+                        <span>Placed on: {{ order.date }}</span>
+                    </div>
+                    <div>
+                        {% set status_class = order.status|lower %}
+                        <span class="status-badge {{ status_class }}">
+                            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 11px;"></i> {{ order.status }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Order Body (Items) -->
+                <div class="order-body">
+                    {% for item in order['items'] %}
+                    <div class="order-item">
+                        <div class="item-info">
+                            <img src="{{ item.image }}" alt="{{ item.name }}">
+                            <div class="item-details">
+                                <h4>{{ item.name }}</h4>
+                                <p>Qty: {{ item.quantity }}</p>
+                            </div>
+                        </div>
+                        <div class="item-price-qty">
+                            <span class="price">₹{{ item.price }}</span>
+                            <p class="qty">Unit Price</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <!-- Shipping Address Info -->
+                    <div class="order-address">
+                        <strong><i class="fa-solid fa-location-dot"></i> Delivery Address:</strong>
+                        {{ order.address }}
+                    </div>
+                </div>
+
+                <!-- Order Footer -->
+                <div class="order-footer">
+                    <span>Total Paid</span>
+                    <h3>₹{{ order.total_amount }}</h3>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>RK Mart 🛒</h3>
+                <p>India's Smart & Fastest Shopping Destination. Best prices, genuine products, and super-fast delivery to your doorstep.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="/home">Home</a>
+                <a href="/cart">My Cart</a>
+                <a href="/profile">My Account</a>
+                <a href="{{ url_for('admin') }}">Seller Dashboard</a>
+            </div>
+            <div class="footer-col">
+                <h4>Categories</h4>
+                <a href="#">Mobiles & Laptops</a>
+                <a href="#">Fashion & Beauty</a>
+                <a href="#">Electronics</a>
+            </div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <p>Subscribe to get special discounts and offers directly to your inbox!</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RK Mart - Online Shopping | Designed by Rama Krishna</p>
+        </div>
+    </footer>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav">
+        <a href="/home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="/home"><i class="fa-solid fa-layer-group"></i><span>Categories</span></a>
+        <a href="/wishlist"><i class="fa-solid fa-heart"></i><span>Wishlist</span></a>
+        <a href="/cart"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></a>
+        <a href="/profile/orders" class="active"><i class="fa-solid fa-clock-rotate-left"></i><span>Orders</span></a>
+    </div>
+
+</body>
+</html>

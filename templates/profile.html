@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - RK Mart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/home" class="logo">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>RK Mart</span>
+        </a>
+        <div class="nav-links">
+            <a href="/home"><i class="fa-solid fa-house"></i> Back to Home</a>
+        </div>
+    </nav>
+
+    <!-- Profile Container -->
+    <div class="profile-container">
+        
+        <!-- User Welcome Banner -->
+        <div class="dashboard-user-card">
+            <div class="dashboard-user-info">
+                <div class="dashboard-avatar">
+                    {{ session.get('user_name', 'U')[0] }}
+                </div>
+                <div class="dashboard-details">
+                    <h2>Hello, {{ session.get('user_name', 'User') }}!</h2>
+                    <p><i class="fa-solid fa-mobile-screen-button"></i> {{ session.get('user_phone') }}</p>
+                </div>
+            </div>
+            <div class="dashboard-rewards">
+                <span class="rewards-badge">
+                    <i class="fa-solid fa-medal"></i> RK Gold Member
+                </span>
+                <span class="supercoins-count">
+                    <i class="fa-solid fa-coins"></i> 150 SuperCoins
+                </span>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid Menu -->
+        <div class="dashboard-grid">
+            
+            <!-- Orders Card -->
+            <a href="/profile/orders" class="menu-card">
+                <div class="menu-icon">
+                    <i class="fa-solid fa-box-open"></i>
+                </div>
+                <div class="menu-text">
+                    <h3>My Orders</h3>
+                    <p>Track, return, or buy items again</p>
+                </div>
+            </a>
+
+            <!-- Wishlist Card -->
+            <a href="/wishlist" class="menu-card">
+                <div class="menu-icon" style="background: #fdf2f2; color: #ef4444;">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <div class="menu-text">
+                    <h3>My Wishlist</h3>
+                    <p>View your saved list of products</p>
+                </div>
+            </a>
+
+            <!-- Edit Profile Card -->
+            <a href="/profile/edit" class="menu-card">
+                <div class="menu-icon" style="background: #fffbeb; color: #f59e0b;">
+                    <i class="fa-solid fa-user-pen"></i>
+                </div>
+                <div class="menu-text">
+                    <h3>Edit Profile</h3>
+                    <p>Update your full name or credentials</p>
+                </div>
+            </a>
+
+            <!-- Saved Address Card -->
+            <div class="menu-card" style="flex-direction: column; cursor: default;">
+                <div style="display: flex; gap: 15px; width: 100%;">
+                    <div class="menu-icon" style="background: #ecfdf5; color: #10b981;">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <div class="menu-text">
+                        <h3>Saved Address</h3>
+                        <p>Your current shipping address details</p>
+                    </div>
+                </div>
+                <!-- Address Render Area -->
+                <div id="dashboard-address-display" class="saved-address-card">
+                    Loading address...
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Log Out Button -->
+        <div class="logout-btn-container">
+            <a href="/logout" class="dashboard-logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Log Out
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>RK Mart 🛒</h3>
+                <p>India's Smart & Fastest Shopping Destination. Best prices, genuine products, and super-fast delivery to your doorstep.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="/home">Home</a>
+                <a href="/cart">My Cart</a>
+                <a href="/profile">My Account</a>
+                <a href="{{ url_for('admin') }}">Seller Dashboard</a>
+            </div>
+            <div class="footer-col">
+                <h4>Categories</h4>
+                <a href="#">Mobiles & Laptops</a>
+                <a href="#">Fashion & Beauty</a>
+                <a href="#">Electronics</a>
+            </div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <p>Subscribe to get special discounts and offers directly to your inbox!</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RK Mart - Online Shopping | Designed by Rama Krishna</p>
+        </div>
+    </footer>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav">
+        <a href="/home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="/home"><i class="fa-solid fa-layer-group"></i><span>Categories</span></a>
+        <a href="/wishlist"><i class="fa-solid fa-heart"></i><span>Wishlist</span></a>
+        <a href="/cart"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></a>
+        <a href="/profile/orders"><i class="fa-solid fa-clock-rotate-left"></i><span>Orders</span></a>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Read saved address from localStorage
+        const address = localStorage.getItem("rk_bazaar_address");
+        const displayEl = document.getElementById("dashboard-address-display");
+        
+        if (address) {
+            displayEl.innerHTML = `<strong>Delivery Destination:</strong> ${address}`;
+        } else {
+            displayEl.innerHTML = `<span style="color:#64748b; font-style:italic;">No saved delivery address found. Add one during your next checkout!</span>`;
+        }
+    });
+    </script>
+</body>
+</html>

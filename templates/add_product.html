@@ -3,30 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Product - RK Mart</title>
+    <title>Add Product - RK Mart Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/add_product.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 <body>
 
-<div class="container">
-
     <!-- Sidebar -->
     <div class="sidebar">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-            <h2 style="color: #38bdf8; font-size: 24px; font-weight: 700;">🛒 RK Mart</h2>
+        <div class="logo" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <div style="display: flex; align-items: center; gap: 10px; color: #38bdf8;">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span style="font-weight: 700; font-size: 20px;">RK Mart Admin</span>
+            </div>
             <button id="sidebar-close" style="background: none; border: none; color: #ef4444; font-size: 22px; cursor: pointer; display: none;">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
         <ul>
-            <li onclick="window.location.href='/admin/dashboard'"><i class="fa-solid fa-chart-line"></i> Dashboard</li>
-            <li class="active"><i class="fa-solid fa-plus"></i> Add Product</li>
-            <li onclick="window.location.href='/admin/products'"><i class="fa-solid fa-box"></i> Products</li>
-            <li onclick="window.location.href='/admin/orders'"><i class="fa-solid fa-cart-shopping"></i> Orders</li>
-            <li onclick="window.location.href='/admin/customers'"><i class="fa-solid fa-users"></i> Customers</li>
-            <li onclick="window.location.href='/admin'"><i class="fa-solid fa-right-from-bracket"></i> Logout</li>
+            <li class="{% if active == 'dashboard' %}active{% endif %}">
+                <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            </li>
+            <li class="{% if active == 'add_product' %}active{% endif %}">
+                <a href="{{ url_for('add_product') }}"><i class="fa-solid fa-plus"></i> Add Product</a>
+            </li>
+            <li class="{% if active == 'products' %}active{% endif %}">
+                <a href="{{ url_for('admin_products') }}"><i class="fa-solid fa-box"></i> Products</a>
+            </li>
+            <li class="{% if active == 'orders' %}active{% endif %}">
+                <a href="{{ url_for('admin_orders') }}"><i class="fa-solid fa-cart-shopping"></i> Orders</a>
+            </li>
+            <li class="{% if active == 'customers' %}active{% endif %}">
+                <a href="{{ url_for('admin_customers') }}"><i class="fa-solid fa-users"></i> Customers</a>
+            </li>
+            <li>
+                <a href="/home"><i class="fa-solid fa-house"></i> Go to Website</a>
+            </li>
         </ul>
     </div>
 
@@ -39,7 +53,7 @@
                 </button>
                 <h1>Add New Product</h1>
             </div>
-            <button>Admin</button>
+            <button class="profile" onclick="window.location.href='{{ url_for('admin') }}'">Admin</button>
         </div>
 
         <div class="card">
@@ -68,21 +82,32 @@
                     </div>
                 </div>
 
-                <div class="input-box">
-                    <label for="category">Product Category:</label>
-                    <select id="category" name="category" onchange="checkCategory(this)" required style="width: 100%; padding: 12px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc;">
-                        <option value="">-- Select Category --</option>
-                        <option value="Mobiles">📱 Mobiles</option>
-                        <option value="Laptops">💻 Laptops</option>
-                        <option value="Fashion">👗 Fashion</option>
-                        <option value="Electronics">🎧 Electronics</option>
-                        <option value="Other">➕ Other (Type Manual)</option>
-                    </select>
+                <div class="row">
+                    <div class="input-box">
+                        <label for="category">Product Category</label>
+                        <select id="category" name="category" onchange="checkCategory(this)" required>
+                            <option value="">-- Select Category --</option>
+                            <option value="Mobiles">📱 Mobiles</option>
+                            <option value="Laptops">💻 Laptops</option>
+                            <option value="Fashion">👗 Fashion</option>
+                            <option value="Electronics">🎧 Electronics</option>
+                            <option value="Other">➕ Other (Type Manual)</option>
+                        </select>
+                    </div>
+                    <div class="input-box">
+                        <label for="display_section">Display Section</label>
+                        <select id="display_section" name="display_section" required>
+                            <option value="recent">🛍️ Recently Added Products</option>
+                            <option value="deals">🔥 Deals of the Day</option>
+                            <option value="trending">🚀 Trending Now</option>
+                            <option value="new_arrivals">✨ New Arrivals</option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Manual Category Box (Hidden initially) -->
                 <div class="input-box" id="manual-category-box" style="display: none; margin-top: 10px;">
-                    <label for="manual_category">Enter New Category Name:</label>
+                    <label for="manual_category">Enter New Category Name</label>
                     <input type="text" id="manual_category" name="manual_category" placeholder="Ex: Home Appliances, Books, Shoes...">
                 </div>
 
@@ -110,8 +135,6 @@
         </div>
     </div>
 
-</div>
-
 <script src="{{ url_for('static', filename='js/add_product.js') }}"></script>
 <script>
 function checkCategory(selectObject) {
@@ -130,30 +153,32 @@ function checkCategory(selectObject) {
 </script>
 
 <script>
-    const sidebar = document.querySelector('.sidebar');
-    const toggleBtn = document.getElementById('sidebar-toggle');
-    const closeBtn = document.getElementById('sidebar-close');
+    (function() {
+        const sidebar = document.querySelector('.sidebar');
+        const toggleBtn = document.getElementById('sidebar-toggle');
+        const closeBtn = document.getElementById('sidebar-close');
 
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', () => {
-            sidebar.classList.add('mobile-show');
-        });
-    }
-
-    if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            sidebar.classList.remove('mobile-show');
-        });
-    }
-
-    // Close sidebar on background click
-    document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 900) {
-            if (sidebar && !sidebar.contains(e.target) && toggleBtn && !toggleBtn.contains(e.target) && sidebar.classList.contains('mobile-show')) {
-                sidebar.classList.remove('mobile-show');
-            }
+        if (toggleBtn && sidebar) {
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.add('mobile-show');
+            });
         }
-    });
+
+        if (closeBtn && sidebar) {
+            closeBtn.addEventListener('click', () => {
+                sidebar.classList.remove('mobile-show');
+            });
+        }
+
+        // Close sidebar on background click
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 900) {
+                if (sidebar && toggleBtn && !sidebar.contains(e.target) && !toggleBtn.contains(e.target) && sidebar.classList.contains('mobile-show')) {
+                    sidebar.classList.remove('mobile-show');
+                }
+            }
+        });
+    })();
 </script>
 
 </body>

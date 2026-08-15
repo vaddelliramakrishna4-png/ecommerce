@@ -23,10 +23,11 @@
     </form>
 
     <div class="nav-links">
-        <a href="#"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="/home"><i class="fa-solid fa-house"></i> Home</a>
         <a href="#"><i class="fa-solid fa-layer-group"></i> Categories</a>
         <a href="/wishlist"><i class="fa-solid fa-heart"></i> Wishlist</a>
         <a href="/cart"><i class="fa-solid fa-cart-shopping"></i> Cart <span class="cart-count">0</span></a>
+        <a href="/profile"><i class="fa-solid fa-clock-rotate-left"></i> My Orders</a>
         
         <!-- Login Button -->
         <a href="{{ url_for('login') }}">
@@ -127,70 +128,76 @@
         <p>Grab the best offers before they expire!</p>
     </div>
     <div class="deal-container">
-        <!-- Deal 1 -->
-        <div class="deal-card">
-            <span class="discount">-20%</span>
-            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
-            <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500" alt="iPhone 16 Pro">
-            <h3>iPhone 16 Pro</h3>
-            <div class="rating">⭐⭐⭐⭐⭐ <span>(4.9)</span></div>
-            <p class="price">₹1,19,999 <span>₹1,39,999</span></p>
-            <button class="buy-btn" onclick='addToCart("iPhone 16 Pro", "119999", "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500")'>Add To Cart</button>
-        </div>
-        <!-- Deal 2 -->
-        <div class="deal-card">
-            <span class="discount">Best Seller</span>
-            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
-            <img src="https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500" alt="Samsung S25 Ultra">
-            <h3>Samsung S25 Ultra</h3>
-            <div class="rating">⭐⭐⭐⭐☆ <span>(4.8)</span></div>
-            <p class="price">₹99,999 <span>₹1,09,999</span></p>
-            <button class="buy-btn" onclick='addToCart("Samsung S25 Ultra", "99999", "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500")'>Add To Cart</button>
-        </div>
-        <!-- Deal 3 -->
-        <div class="deal-card">
-            <span class="discount">Top Rated</span>
-            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
-            <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=500" alt="HP Pavilion Gaming">
-            <h3>HP Pavilion Gaming</h3>
-            <div class="rating">⭐⭐⭐⭐☆ <span>(4.7)</span></div>
-            <p class="price">₹59,999 <span>₹69,999</span></p>
-            <button class="buy-btn" onclick='addToCart("HP Pavilion Gaming", "59999", "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=500")'>Add To Cart</button>
-        </div>
-        <!-- Deal 4 -->
-        <div class="deal-card">
-            <span class="discount">Limited</span>
-            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
-            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" alt="Boat Headphones">
-            <h3>Boat Headphones</h3>
-            <div class="rating">⭐⭐⭐⭐⭐ <span>(4.9)</span></div>
-            <p class="price">₹2,499 <span>₹3,499</span></p>
-            <button class="buy-btn" onclick='addToCart("Boat Headphones", "2499", "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500")'>Add To Cart</button>
-        </div>
+        {% for item in products %}
+            {% if item.display_section == 'deals' %}
+            <div class="deal-card">
+                {% if item.badge %}
+                <span class="discount">{{ item.badge }}</span>
+                {% endif %}
+                <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+                <a href="{{ url_for('product_details', product_id=item.id) }}">
+                    <img src="{{ item.image }}" alt="{{ item.name }}">
+                </a>
+                <a href="{{ url_for('product_details', product_id=item.id) }}" style="text-decoration:none; color:inherit;">
+                    <h3>{{ item.name }}</h3>
+                </a>
+                <div class="rating">
+                    {% set full_stars = item.rating|int %}
+                    {% for i in range(full_stars) %}⭐{% endfor %}{% if item.rating - full_stars >= 0.5 %}⭐{% endif %}
+                    <span>({{ item.rating }})</span>
+                </div>
+                <p class="price">
+                    ₹{{ item.price }}
+                    {% if item.original_price %}
+                    <span>₹{{ item.original_price }}</span>
+                    {% endif %}
+                </p>
+                <button class="buy-btn" onclick="addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image }}')">Add To Cart</button>
+            </div>
+            {% endif %}
+        {% endfor %}
     </div>
 </section>
 
 <!-- ================= RECENTLY ADDED PRODUCTS ================= -->
 {% if products and products|length > 0 %}
-<section class="product-section">
-    <div class="section-title">
-        <h2>🛍️ Recently Added Products</h2>
-        <p>Freshly stocked from our seller dashboard</p>
-    </div>
-    <div class="product-grid">
-        {% for item in products %}
-        <div class="product-card">
-            <span class="badge">{{ item.category }}</span>
-            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
-            <img src="{{ item.image }}" alt="{{ item.name }}" style="width: 160px; height: 160px; object-fit: contain; margin: 15px 0;">
-            <h3>{{ item.name }}</h3>
-            <div class="rating">⭐⭐⭐⭐⭐ <span>(5.0)</span></div>
-            <p class="price">₹{{ item.price }}</p>
-            <button class="buy-btn" onclick="addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image }}')">Add To Cart</button>
+    {% set recent_exists = namespace(val=false) %}
+    {% for item in products %}
+        {% if not item.display_section or item.display_section == 'recent' %}
+            {% set recent_exists.val = true %}
+        {% endif %}
+    {% endfor %}
+    {% if recent_exists.val %}
+    <section class="product-section">
+        <div class="section-title">
+            <h2>🛍️ Recently Added Products</h2>
+            <p>Freshly stocked from our seller dashboard</p>
         </div>
-        {% endfor %}
-    </div>
-</section>
+        <div class="product-grid">
+            {% for item in products %}
+                {% if not item.display_section or item.display_section == 'recent' %}
+                <div class="product-card">
+                    <span class="badge">{{ item.category }}</span>
+                    <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+                    <a href="{{ url_for('product_details', product_id=item.id) }}">
+                        <img src="{{ item.image }}" alt="{{ item.name }}">
+                    </a>
+                    <a href="{{ url_for('product_details', product_id=item.id) }}" style="text-decoration:none; color:inherit;">
+                        <h3>{{ item.name }}</h3>
+                    </a>
+                    <div class="rating">
+                        {% set full_stars = item.rating|int %}
+                        {% for i in range(full_stars) %}⭐{% endfor %}{% if item.rating - full_stars >= 0.5 %}⭐{% endif %}
+                        <span>({{ item.rating }})</span>
+                    </div>
+                    <p class="price">₹{{ item.price }}</p>
+                    <button class="buy-btn" onclick="addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image }}')">Add To Cart</button>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
 {% endif %}
 
 <!-- ================= TRENDING PRODUCTS ================= -->
@@ -200,42 +207,32 @@
         <p>Top viewed and most purchased products this week</p>
     </div>
     <div class="product-grid">
-        <div class="product-card">
-            <span class="badge hot">HOT</span>
-            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
-            <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500" alt="MacBook Air M3">
-            <h3>MacBook Air M3</h3>
-            <div class="rating">⭐⭐⭐⭐⭐ <span>(5.0)</span></div>
-            <p class="price">₹1,14,999 <span>₹1,34,999</span></p>
-            <button class="buy-btn" onclick='addToCart("MacBook Air M3", "114999", "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500")'>Add To Cart</button>
-        </div>
-        <div class="product-card">
-            <span class="badge hot">HOT</span>
-            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
-            <img src="https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500" alt="Sony Bravia 55 TV">
-            <h3>Sony Bravia 55" 4K TV</h3>
-            <div class="rating">⭐⭐⭐⭐☆ <span>(4.6)</span></div>
-            <p class="price">₹54,999 <span>₹74,999</span></p>
-            <button class="buy-btn" onclick='addToCart("Sony Bravia 55 4K TV", "54999", "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500")'>Add To Cart</button>
-        </div>
-        <div class="product-card">
-            <span class="badge">SALE</span>
-            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
-            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" alt="Nike Air Max 2026">
-            <h3>Nike Air Max 2026</h3>
-            <div class="rating">⭐⭐⭐⭐⭐ <span>(4.9)</span></div>
-            <p class="price">₹7,999 <span>₹11,999</span></p>
-            <button class="buy-btn" onclick='addToCart("Nike Air Max 2026", "7999", "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500")'>Add To Cart</button>
-        </div>
-        <div class="product-card">
-            <span class="badge hot">HOT</span>
-            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
-            <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500" alt="Apple Watch Series 9">
-            <h3>Apple Watch Series 9</h3>
-            <div class="rating">⭐⭐⭐⭐☆ <span>(4.7)</span></div>
-            <p class="price">₹39,999 <span>₹44,999</span></p>
-            <button class="buy-btn" onclick='addToCart("Apple Watch Series 9", "39999", "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500")'>Add To Cart</button>
-        </div>
+        {% for item in products %}
+            {% if item.display_section == 'trending' %}
+            <div class="product-card">
+                <span class="badge {% if item.badge == 'HOT' %}hot{% elif item.badge == 'NEW' %}new{% endif %}">{{ item.badge or item.category }}</span>
+                <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+                <a href="{{ url_for('product_details', product_id=item.id) }}">
+                    <img src="{{ item.image }}" alt="{{ item.name }}">
+                </a>
+                <a href="{{ url_for('product_details', product_id=item.id) }}" style="text-decoration:none; color:inherit;">
+                    <h3>{{ item.name }}</h3>
+                </a>
+                <div class="rating">
+                    {% set full_stars = item.rating|int %}
+                    {% for i in range(full_stars) %}⭐{% endfor %}{% if item.rating - full_stars >= 0.5 %}⭐{% endif %}
+                    <span>({{ item.rating }})</span>
+                </div>
+                <p class="price">
+                    ₹{{ item.price }}
+                    {% if item.original_price %}
+                    <span>₹{{ item.original_price }}</span>
+                    {% endif %}
+                </p>
+                <button class="buy-btn" onclick="addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image }}')">Add To Cart</button>
+            </div>
+            {% endif %}
+        {% endfor %}
     </div>
 </section>
 
@@ -246,42 +243,32 @@
         <p>Just launched! Be the first one to buy</p>
     </div>
     <div class="product-grid">
-        <div class="product-card">
-            <span class="badge new">NEW</span>
-            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
-            <img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=500" alt="PlayStation 5 Pro">
-            <h3>PlayStation 5 Pro</h3>
-            <div class="rating">⭐⭐⭐⭐⭐ <span>(5.0)</span></div>
-            <p class="price">₹49,999 <span>₹54,999</span></p>
-            <button class="buy-btn" onclick='addToCart("PlayStation 5 Pro", "49999", "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=500")'>Add To Cart</button>
-        </div>
-        <div class="product-card">
-            <span class="badge new">NEW</span>
-            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
-            <img src="https://images.unsplash.com/photo-1507582020474-9a35b7d455d9?w=500" alt="DJI Mini 4 Pro Drone">
-            <h3>DJI Mini 4 Pro Drone</h3>
-            <div class="rating">⭐⭐⭐⭐☆ <span>(4.8)</span></div>
-            <p class="price">₹72,000 <span>₹85,000</span></p>
-            <button class="buy-btn" onclick='addToCart("DJI Mini 4 Pro Drone", "72000", "https://images.unsplash.com/photo-1507582020474-9a35b7d455d9?w=500")'>Add To Cart</button>
-        </div>
-        <div class="product-card">
-            <span class="badge new">NEW</span>
-            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
-            <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" alt="Sony Alpha ILCE-7M4">
-            <h3>Sony Alpha ILCE-7M4</h3>
-            <div class="rating">⭐⭐⭐⭐⭐ <span>(4.9)</span></div>
-            <p class="price">₹1,99,999 <span>₹2,20,000</span></p>
-            <button class="buy-btn" onclick='addToCart("Sony Alpha ILCE-7M4", "199999", "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500")'>Add To Cart</button>
-        </div>
-        <div class="product-card">
-            <span class="badge new">NEW</span>
-            <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
-            <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500" alt="iPad Pro M4">
-            <h3>iPad Pro M4 (2026)</h3>
-            <div class="rating">⭐⭐⭐⭐⭐ <span>(4.9)</span></div>
-            <p class="price">₹99,999 <span>₹1,09,999</span></p>
-            <button class="buy-btn" onclick='addToCart("iPad Pro M4 (2026)", "99999", "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500")'>Add To Cart</button>
-        </div>
+        {% for item in products %}
+            {% if item.display_section == 'new_arrivals' %}
+            <div class="product-card">
+                <span class="badge {% if item.badge == 'NEW' %}new{% elif item.badge == 'HOT' %}hot{% endif %}">{{ item.badge or item.category }}</span>
+                <i class="fa-solid fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+                <a href="{{ url_for('product_details', product_id=item.id) }}">
+                    <img src="{{ item.image }}" alt="{{ item.name }}">
+                </a>
+                <a href="{{ url_for('product_details', product_id=item.id) }}" style="text-decoration:none; color:inherit;">
+                    <h3>{{ item.name }}</h3>
+                </a>
+                <div class="rating">
+                    {% set full_stars = item.rating|int %}
+                    {% for i in range(full_stars) %}⭐{% endfor %}{% if item.rating - full_stars >= 0.5 %}⭐{% endif %}
+                    <span>({{ item.rating }})</span>
+                </div>
+                <p class="price">
+                    ₹{{ item.price }}
+                    {% if item.original_price %}
+                    <span>₹{{ item.original_price }}</span>
+                    {% endif %}
+                </p>
+                <button class="buy-btn" onclick="addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image }}')">Add To Cart</button>
+            </div>
+            {% endif %}
+        {% endfor %}
     </div>
 </section>
 
@@ -296,8 +283,8 @@
             <h4>Quick Links</h4>
             <a href="#">About Us</a>
             <a href="#">Contact Us</a>
-            <a href="/admin/dashboard">Seller Dashboard</a>
-            <a href="#">My Orders</a>
+            <a href="{{ url_for('admin') }}">Seller Dashboard</a>
+            <a href="/profile">My Orders</a>
         </div>
         <div class="footer-col">
             <h4>Categories</h4>
@@ -326,7 +313,7 @@
     <a href="#" onclick="filterCategory('all')"><i class="fa-solid fa-layer-group"></i><span>Categories</span></a>
     <a href="/wishlist"><i class="fa-solid fa-heart"></i><span>Wishlist</span></a>
     <a href="/cart"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span><span class="cart-count">0</span></a>
-    <a href="/login"><i class="fa-solid fa-user"></i><span>Login</span></a>
+    <a href="/profile/orders"><i class="fa-solid fa-clock-rotate-left"></i><span>Orders</span></a>
 </div>
 
 <script src="{{ url_for('static', filename='js/home.js') }}"></script>

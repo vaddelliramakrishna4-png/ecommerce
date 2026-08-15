@@ -98,11 +98,11 @@ function addToCart(name, price, image) {
 }
 
 function updateCartCount() {
-    let countBadge = document.querySelector(".cart-count");
-    if (countBadge) {
-        let totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-        countBadge.innerText = totalItems;
-    }
+    let countBadges = document.querySelectorAll(".cart-count");
+    let totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+    countBadges.forEach(badge => {
+        badge.innerText = totalItems;
+    });
 }
 
 

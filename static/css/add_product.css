@@ -1,63 +1,4 @@
-/* Google Font */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Poppins',sans-serif;
-}
-
-body{
-    background:#0f172a;
-    color:#fff;
-}
-
-/* Layout */
-.container{
-    display:flex;
-    min-height:100vh;
-}
-
-/* Sidebar */
-.sidebar{
-    width:260px;
-    background:#111827;
-    padding:30px 20px;
-    position:fixed;
-    height:100%;
-    box-shadow:5px 0 25px rgba(0,0,0,.3);
-}
-
-.sidebar h2{
-    text-align:center;
-    margin-bottom:40px;
-    color:#38bdf8;
-}
-
-.sidebar ul{
-    list-style:none;
-}
-
-.sidebar li{
-    padding:15px;
-    margin-bottom:12px;
-    border-radius:12px;
-    cursor:pointer;
-    transition:.35s;
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.sidebar li:hover{
-    background:#2563eb;
-    transform:translateX(8px);
-}
-
-.sidebar .active{
-    background:#2563eb;
-}
+/* Custom Add Product Form Styles */
 
 /* Content */
 
@@ -144,7 +85,7 @@ body{
 
     width:100%;
     padding:15px;
-    border:none;
+    border:1px solid #334155;
     outline:none;
     border-radius:12px;
     background:#1e293b;

@@ -15,19 +15,21 @@ html {
 }
 
 body {
-    background: #eef2f7;
+    background: #f8f9fa;
+    color: #1e293b;
     overflow-x: hidden;
 }
 
 /* COLORS */
 :root {
-    --primary: #2563eb;
-    --secondary: #38bdf8;
-    --dark: #1e293b;
-    --white: #fff;
-    --text: #222;
-    --gray: #666;
-    --green: #16a34a;
+    --primary: #2874f0;      /* Modern Flipkart Blue */
+    --secondary: #ffc200;    /* Premium Gold/Yellow */
+    --dark: #0f172a;         /* High-contrast deep slate */
+    --white: #ffffff;
+    --text: #1e293b;         /* Professional high-contrast dark text */
+    --gray: #475569;         /* Modern gray subtext */
+    --green: #10b981;        /* Emerald green */
+    --light-bg: #f8f9fa;     /* Super smooth light gray background */
 }
 
 /* =========================
@@ -41,39 +43,45 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 16px 55px;
-    background: #1f2937;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, .12);
+    background: var(--primary);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .08);
 }
 
 .logo {
     display: flex;
     align-items: center;
     gap: 12px;
-    color: #38bdf8;
+    color: var(--white);
     font-size: 22px;
     font-weight: 700;
+    white-space: nowrap;
 }
 
 .logo i {
     font-size: 34px;
+    color: var(--secondary);
 }
 
 .search-box {
-    width: 520px;
+    flex: 1;
+    max-width: 440px;
+    margin: 0 15px;
     display: flex;
     align-items: center;
-    background: #2b3548;
+    background: rgba(255, 255, 255, 0.18);
     padding: 13px 18px;
     border-radius: 50px;
     transition: .35s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .search-box:hover {
-    box-shadow: 0 0 18px rgba(56, 189, 248, .35);
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 .search-box i {
-    color: #38bdf8;
+    color: var(--white);
     margin-right: 12px;
 }
 
@@ -82,49 +90,53 @@ body {
     border: none;
     outline: none;
     background: none;
-    color: white;
+    color: var(--white);
     font-size: 15px;
 }
 
 .search-box input::placeholder {
-    color: #bfc7d6;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 28px;
+    gap: 18px;
 }
 
 .nav-links a {
     text-decoration: none;
-    color: white;
+    color: var(--white);
     font-weight: 600;
     transition: .3s;
+    white-space: nowrap;
 }
 
 .nav-links a:hover {
-    color: #38bdf8;
+    color: var(--secondary);
 }
 
 .cart-count {
-    background: #2563eb;
-    color: white;
+    background: var(--secondary);
+    color: var(--dark);
     padding: 3px 8px;
     border-radius: 50%;
     font-size: 12px;
+    font-weight: bold;
 }
 
 .login-btn {
-    background: linear-gradient(45deg, #2563eb, #38bdf8);
+    background: linear-gradient(45deg, var(--secondary), #ffb300);
+    color: var(--dark) !important;
     padding: 12px 22px;
     border-radius: 30px;
     transition: .3s;
+    box-shadow: 0 3px 10px rgba(255, 194, 0, 0.3);
 }
 
 .login-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(37, 99, 235, .4);
+    box-shadow: 0 5px 15px rgba(255, 194, 0, 0.5);
 }
 
 /* ================= HERO SLIDER (SMOOTH SIDE SLIDE FIX) ================= */
@@ -314,15 +326,18 @@ body {
 .deal-card {
     background: white;
     padding: 20px;
-    border-radius: 15px;
+    border-radius: 12px;
     text-align: center;
     position: relative;
-    transition: 0.3s;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .deal-card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(40, 116, 240, 0.08);
+    border-color: rgba(40, 116, 240, 0.25);
 }
 
 .discount {
@@ -350,7 +365,7 @@ body {
 .price {
     font-size: 22px;
     font-weight: bold;
-    color: #2874f0;
+    color: var(--primary);
 }
 
 .price span {
@@ -362,10 +377,11 @@ body {
 
 /* 🔥 FIX FOR DEALS OF THE DAY BUTTONS (BLUE & PREMIUM) 🔥 */
 .product-card button,
-.deal-card button {
+.deal-card button,
+.buy-btn {
     width: 90%;
     margin: 10px auto 20px;
-    background: linear-gradient(45deg, #2563eb, #38bdf8);
+    background: linear-gradient(45deg, var(--primary), #1d4ed8);
     color: white;
     border: none;
     padding: 14px;
@@ -373,17 +389,24 @@ body {
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
-    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(40, 116, 240, 0.2);
+    transition: all 0.2s ease-in-out;
     display: block;
 }
 
 /* Mouse pettinappudu button paiki lechi glow avvadaniki */
 .product-card button:hover,
-.deal-card button:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.5);
-    background: linear-gradient(45deg, #1d4ed8, #0284c7);
+.deal-card button:hover,
+.buy-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(40, 116, 240, 0.35);
+    background: linear-gradient(45deg, #1d4ed8, #1e40af);
+}
+
+.product-card button:active,
+.deal-card button:active,
+.buy-btn:active {
+    transform: scale(0.97);
 }
 
 /* ================= TRENDING & NEW ARRIVALS ================= */
@@ -405,19 +428,21 @@ body {
 .product-card {
     background: white;
     padding: 20px;
-    border-radius: 15px;
+    border-radius: 12px;
     text-align: center;
     position: relative;
-    border: 1px solid #eee;
-    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
 .product-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(40, 116, 240, 0.08);
+    border-color: rgba(40, 116, 240, 0.25);
 }
 
 /* 🔥 BIGGER & BETTER IMAGES (APPLIED TO ALL CARDS) 🔥 */
@@ -739,7 +764,7 @@ body {
         height: 220px;
         border-radius: 0 !important;
         width: 100% !important;
-        margin: 10px 0 25px 0 !important;
+        margin: 10px 0 15px 0 !important;
     }
 
     .hero-content {
@@ -829,6 +854,11 @@ body {
         font-size: 13px;
         border-radius: 20px;
         margin: 8px auto;
+    }
+
+    /* Reduce large spacing gaps on mobile */
+    .deals, .product-section {
+        padding: 25px 5%;
     }
 
     /* Footer styling */

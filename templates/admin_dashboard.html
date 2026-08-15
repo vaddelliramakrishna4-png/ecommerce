@@ -30,52 +30,24 @@
     </div>
 
     <ul>
-
-        <li class="active">
-            <i class="fa-solid fa-chart-line"></i>
-            Dashboard
+        <li class="{% if active == 'dashboard' %}active{% endif %}">
+            <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
         </li>
-
-        <li onclick="window.location.href='/add-product'">
-            <i class="fa-solid fa-plus"></i>
-            Add Product
+        <li class="{% if active == 'add_product' %}active{% endif %}">
+            <a href="{{ url_for('add_product') }}"><i class="fa-solid fa-plus"></i> Add Product</a>
         </li>
-
-        <li onclick="window.location.href='/admin/products'">
-            <i class="fa-solid fa-box"></i>
-            Products
+        <li class="{% if active == 'products' %}active{% endif %}">
+            <a href="{{ url_for('admin_products') }}"><i class="fa-solid fa-box"></i> Products</a>
         </li>
-
-        <li onclick="window.location.href='/admin/categories'">
-            <i class="fa-solid fa-layer-group"></i>
-            Categories
+        <li class="{% if active == 'orders' %}active{% endif %}">
+            <a href="{{ url_for('admin_orders') }}"><i class="fa-solid fa-cart-shopping"></i> Orders</a>
         </li>
-
-        <li onclick="window.location.href='/admin/orders'">
-            <i class="fa-solid fa-cart-shopping"></i>
-            Orders
+        <li class="{% if active == 'customers' %}active{% endif %}">
+            <a href="{{ url_for('admin_customers') }}"><i class="fa-solid fa-users"></i> Customers</a>
         </li>
-
-        <li onclick="window.location.href='/admin/customers'">
-            <i class="fa-solid fa-users"></i>
-            Customers
+        <li>
+            <a href="/home"><i class="fa-solid fa-house"></i> Go to Website</a>
         </li>
-
-        <li onclick="window.location.href='/admin/payments'">
-            <i class="fa-solid fa-credit-card"></i>
-            Payments
-        </li>
-
-        <li onclick="window.location.href='/admin/reviews'">
-            <i class="fa-solid fa-star"></i>
-            Reviews
-        </li>
-
-        <li onclick="window.location.href='/admin/settings'">
-            <i class="fa-solid fa-gear"></i>
-            Settings
-        </li>
-
     </ul>
 
 </div>
@@ -91,7 +63,7 @@
             <h1>Welcome Back 👋</h1>
         </div>
 
-        <button class="profile">
+        <button class="profile" onclick="window.location.href='{{ url_for('admin') }}'">
             Admin
         </button>
 
@@ -100,22 +72,22 @@
     <div class="cards">
 
         <div class="card">
-            <h2>120</h2>
+            <h2>{{ total_products }}</h2>
             <p>Total Products</p>
         </div>
 
         <div class="card">
-            <h2>350</h2>
+            <h2>{{ total_customers }}</h2>
             <p>Customers</p>
         </div>
 
         <div class="card">
-            <h2>540</h2>
+            <h2>{{ total_orders }}</h2>
             <p>Orders</p>
         </div>
 
         <div class="card">
-            <h2>₹4.8L</h2>
+            <h2>{{ revenue }}</h2>
             <p>Revenue</p>
         </div>
 
@@ -124,30 +96,32 @@
 </div>
 
 <script>
-    const sidebar = document.querySelector('.sidebar');
-    const toggleBtn = document.getElementById('sidebar-toggle');
-    const closeBtn = document.getElementById('sidebar-close');
+    (function() {
+        const sidebar = document.querySelector('.sidebar');
+        const toggleBtn = document.getElementById('sidebar-toggle');
+        const closeBtn = document.getElementById('sidebar-close');
 
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', () => {
-            sidebar.classList.add('mobile-show');
-        });
-    }
-
-    if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            sidebar.classList.remove('mobile-show');
-        });
-    }
-
-    // Close sidebar on background click
-    document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 900) {
-            if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target) && sidebar.classList.contains('mobile-show')) {
-                sidebar.classList.remove('mobile-show');
-            }
+        if (toggleBtn && sidebar) {
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.add('mobile-show');
+            });
         }
-    });
+
+        if (closeBtn && sidebar) {
+            closeBtn.addEventListener('click', () => {
+                sidebar.classList.remove('mobile-show');
+            });
+        }
+
+        // Close sidebar on background click
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 900) {
+                if (sidebar && toggleBtn && !sidebar.contains(e.target) && !toggleBtn.contains(e.target) && sidebar.classList.contains('mobile-show')) {
+                    sidebar.classList.remove('mobile-show');
+                }
+            }
+        });
+    })();
 </script>
 
 </body>

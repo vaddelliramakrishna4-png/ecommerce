@@ -33,11 +33,23 @@
     <div class="product-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto;">
         {% for item in products %}
         <div class="product-card" style="background:#fff; padding:15px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); text-align:center;">
-            <img src="{{ item.image }}" alt="{{ item.name }}" style="width: 160px; height: 160px; object-fit: contain; margin: 15px auto;">
-            <h3>{{ item.name }}</h3>
-            <div class="rating">⭐⭐⭐⭐⭐ <span>(4.8)</span></div>
+            <a href="{{ url_for('product_details', product_id=item.id) }}">
+                <img src="{{ item.image }}" alt="{{ item.name }}">
+            </a>
+            <a href="{{ url_for('product_details', product_id=item.id) }}" style="text-decoration:none; color:inherit;">
+                <h3>{{ item.name }}</h3>
+            </a>
+            <div class="rating">
+                {% if item.rating %}
+                    {% set full_stars = item.rating|int %}
+                    {% for i in range(full_stars) %}⭐{% endfor %}{% if item.rating - full_stars >= 0.5 %}⭐{% endif %}
+                    <span>({{ item.rating }})</span>
+                {% else %}
+                    ⭐⭐⭐⭐⭐ <span>(5.0)</span>
+                {% endif %}
+            </div>
             <p class="price" style="color:#2563eb; font-weight:bold; font-size:18px; margin:10px 0;">₹{{ item.price }}</p>
-            <button class="buy-btn" onclick="addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image }}')" style="background:#2563eb; color:#white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer; width:100%;">Add To Cart</button>
+            <button class="buy-btn" onclick="addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image }}')" style="background:#2563eb; color:white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer; width:100%;">Add To Cart</button>
         </div>
         {% endfor %}
     </div>

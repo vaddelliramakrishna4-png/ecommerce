@@ -34,10 +34,20 @@
     </div>
 
     <script>
-        let wishlist = JSON.parse(localStorage.getItem("shopkart_wishlist")) || [];
+        let wishlist = JSON.parse(localStorage.getItem("rk_bazaar_wishlist")) || [];
         let container = document.getElementById("wishlist-items-container");
 
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem("rk_bazaar_cart")) || [];
+            let countBadges = document.querySelectorAll(".cart-count");
+            let totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            countBadges.forEach(badge => {
+                badge.innerText = totalItems;
+            });
+        }
+
         function renderWishlist() {
+            updateCartCount();
             container.innerHTML = "";
 
             if (wishlist.length === 0) {
@@ -70,20 +80,26 @@
 
         function removeWishlistItem(index) {
             wishlist.splice(index, 1);
-            localStorage.setItem("shopkart_wishlist", JSON.stringify(wishlist));
+            localStorage.setItem("rk_bazaar_wishlist", JSON.stringify(wishlist));
             renderWishlist();
         }
 
         function moveToCart(name, price, image) {
             // Cart loki pampadam
-            let cart = JSON.parse(localStorage.getItem("shopkart_cart")) || [];
+            let cart = JSON.parse(localStorage.getItem("rk_bazaar_cart")) || [];
             let cleanPrice = Number(price.replace(/[^0-9]/g, ''));
-            cart.push({ name: name, price: cleanPrice, image: image, quantity: 1 });
-            localStorage.setItem("shopkart_cart", JSON.stringify(cart));
+            
+            let existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ name: name, price: cleanPrice, image: image, quantity: 1 });
+            }
+            localStorage.setItem("rk_bazaar_cart", JSON.stringify(cart));
 
             // Wishlist nunchi remove cheyyadam
             wishlist = wishlist.filter(item => item.name !== name);
-            localStorage.setItem("shopkart_wishlist", JSON.stringify(wishlist));
+            localStorage.setItem("rk_bazaar_wishlist", JSON.stringify(wishlist));
 
             alert(`🛒 "${name}" Cart loki move ayyindi!`);
             renderWishlist();
@@ -97,7 +113,7 @@
         <a href="/home"><i class="fa-solid fa-layer-group"></i><span>Categories</span></a>
         <a href="/wishlist" class="active"><i class="fa-solid fa-heart"></i><span>Wishlist</span></a>
         <a href="/cart"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span><span class="cart-count">0</span></a>
-        <a href="/login"><i class="fa-solid fa-user"></i><span>Login</span></a>
+        <a href="/profile/orders"><i class="fa-solid fa-clock-rotate-left"></i><span>Orders</span></a>
     </div>
 
 </body>

@@ -1,7 +1,16 @@
 // LocalStorage nunchi RK Bazaar cart data techukuntunnam
 let cart = JSON.parse(localStorage.getItem("rk_bazaar_cart")) || [];
 
+function updateCartCount() {
+    let countBadges = document.querySelectorAll(".cart-count");
+    let totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+    countBadges.forEach(badge => {
+        badge.innerText = totalItems;
+    });
+}
+
 function renderCart() {
+    updateCartCount();
     let container = document.getElementById("cart-items-container");
     let totalPriceEl = document.getElementById("total-price");
     let finalPriceEl = document.getElementById("final-price");
@@ -166,7 +175,46 @@ function saveNewAddressAndOrder(event) {
 
 // OK click chesinappudu direct order place aipovali
 function placeOrderSuccess() {
-    localStorage.removeItem("rk_bazaar_cart");
-    alert("🎉 Order Placed Successfully! Thank you for shopping with RK Bazaar.");
-    window.location.href = "/home";
+    placeOrder();
+}
+
+// Order dynamic ga backend `/checkout` route ki pampadaniki
+function placeOrder() {
+    let cart = JSON.parse(localStorage.getItem("rk_bazaar_cart")) || [];
+    let savedAddress = localStorage.getItem("rk_bazaar_address") || "No address provided";
+
+    if (cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+    }
+
+    fetch("/checkout", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            items: cart,
+            address: savedAddress
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("HTTP error " + response.status);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            localStorage.removeItem("rk_bazaar_cart");
+            alert("🎉 Order Placed Successfully! Order ID: " + data.order_id);
+            window.location.href = "/profile";
+        } else {
+            alert("Failed to place order: " + data.message);
+        }
+    })
+    .catch(err => {
+        console.error("Error placing order:", err);
+        alert("An error occurred while placing the order.");
+    });
 }

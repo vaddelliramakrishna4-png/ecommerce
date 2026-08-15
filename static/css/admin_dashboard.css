@@ -41,26 +41,31 @@ list-style:none;
 }
 
 .sidebar li{
+    margin-bottom:12px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:all 0.3s ease;
+    overflow: hidden;
+}
 
-padding:16px;
-margin-bottom:15px;
-border-radius:12px;
-cursor:pointer;
-transition:.3s;
-
+.sidebar li a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 16px 20px;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
 .sidebar li:hover{
-
-background:#2563eb;
-transform:translateX(8px);
-
+    background:#2874f0;
+    transform:translateX(8px);
 }
 
-.active{
-
-background:#2563eb;
-
+.sidebar li.active{
+    background:#2874f0;
 }
 
 .sidebar i{
@@ -87,7 +92,7 @@ align-items:center;
 
 .profile{
 
-background:#2563eb;
+background:#2874f0;
 border:none;
 padding:12px 25px;
 border-radius:30px;
@@ -119,7 +124,7 @@ background:rgba(255,255,255,.08);
 backdrop-filter:blur(18px);
 padding:35px;
 border-radius:18px;
-box-shadow:0 0 25px rgba(37,99,235,.25);
+box-shadow:0 0 25px rgba(40,116,240,.25);
 transition:.4s;
 
 }
@@ -127,7 +132,7 @@ transition:.4s;
 .card:hover{
 
 transform:translateY(-12px);
-box-shadow:0 0 40px rgba(37,99,235,.6);
+box-shadow:0 0 40px rgba(40,116,240,.6);
 
 }
 
@@ -214,4 +219,98 @@ color:#cbd5e1;
     .card {
         padding: 20px;
     }
+}
+
+/* ================= TABLE LAYOUTS ================= */
+.table-container {
+    margin-top: 30px;
+    background: #1e293b;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+tr {
+    border-bottom: 1px solid #334155;
+}
+tr:last-child {
+    border-bottom: none;
+}
+th, td {
+    padding: 16px;
+}
+th {
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 15px;
+}
+td {
+    color: #cbd5e1;
+    font-size: 15px;
+}
+.btn-delete {
+    background: #ef4444;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.3s;
+    border: none;
+    cursor: pointer;
+}
+.btn-delete:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* ================= STATUS SELECTS & BADGES ================= */
+.status-select {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    background: #1e293b;
+    color: white;
+    border: 1px solid #475569;
+    transition: 0.2s;
+}
+.status-select:hover {
+    border-color: #38bdf8;
+}
+
+/* Styles for status dropdown container coloring */
+.status-select.processing {
+    background: #1e3a8a;
+    color: #93c5fd;
+    border-color: #3b82f6;
+}
+.status-select.shipped {
+    background: #78350f;
+    color: #fde047;
+    border-color: #eab308;
+}
+.status-select.delivered {
+    background: #064e3b;
+    color: #6ee7b7;
+    border-color: #10b981;
+}
+.status-select.cancelled {
+    background: #7f1d1d;
+    color: #fca5a5;
+    border-color: #ef4444;
 }
