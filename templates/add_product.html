@@ -116,13 +116,16 @@
                     <textarea name="description" rows="4" placeholder="Enter product description..."></textarea>
                 </div>
 
-                <!-- SINGLE Upload Box -->
-                <div class="upload" style="margin-top: 20px;">
-                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                    <p>Click here to Upload Product Image</p>
-                    <input type="file" name="product_image" id="imageInput" accept="image/*">
-                    <br><br>
-                    <img id="preview" src="" style="display:none; width:200px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,.2);">
+                <!-- Image Upload Box -->
+                <div class="upload" style="margin-top: 20px; border: 2px dashed #38bdf8; border-radius: 12px; padding: 30px; text-align: center; background: rgba(56, 189, 248, 0.03); cursor: pointer; position: relative;">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 40px; color: #38bdf8; margin-bottom: 15px;"></i>
+                    <p style="color: #94a3b8; font-weight: 500;">Click here to Upload Product Images (Select 3 or 4 images)</p>
+                    <input type="file" name="product_images" id="imageInput" accept="image/*" multiple style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                    <p style="color: #64748b; font-size: 13px; margin-top: 5px;">You can select multiple files at once</p>
+                </div>
+                
+                <!-- Thumbnails Container -->
+                <div id="preview-container" style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px; justify-content: center;">
                 </div>
 
                 <!-- Save Button at the VERY BOTTOM -->

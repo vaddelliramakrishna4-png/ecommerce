@@ -604,14 +604,23 @@ def add_product():
         if category == "Other":
             category = request.form.get("manual_category")
 
-        image_file = request.files.get("product_image")
-        if image_file and image_file.filename != '':
-            image_name = image_file.filename
-            image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_name)
-            image_file.save(image_path)
-            final_image_url = url_for('static', filename='images/products/' + image_name)
-        else:
-            final_image_url = "https://via.placeholder.com/200"
+        # Process uploaded files (supports multiple product images)
+        uploaded_files = request.files.getlist("product_images")
+        image_urls = []
+        
+        for file in uploaded_files:
+            if file and file.filename != '':
+                image_name = file.filename
+                image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_name)
+                file.save(image_path)
+                url = url_for('static', filename='images/products/' + image_name)
+                image_urls.append(url)
+                
+        # Fallback if no images were successfully uploaded
+        if not image_urls:
+            image_urls = ["https://via.placeholder.com/200"]
+            
+        final_image_url = image_urls[0]  # The first image is the main showcase image
 
         # Generate unique ID slug from name
         slug = name.lower().strip()
@@ -639,7 +648,7 @@ def add_product():
             badge="NEW",
             display_section=display_section
         )
-        new_prod.images = [final_image_url]
+        new_prod.images = image_urls
         db.session.add(new_prod)
         db.session.commit()
 
