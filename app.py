@@ -595,8 +595,7 @@ def admin():
 def admin_login():
     username = request.form.get("username", "").lower().strip()
     password = request.form.get("password", "").strip()
-    # Accept standard admin123 or any password of length >= 4 for admin usernames in local testing
-    if username in ["admin", "vaddelliramakrishna@7gmail.com"] and (password == "admin123" or len(password) >= 4):
+    if username == "vaddelliramakrishna4@gmail.com" and password == "Kittu@2005":
         session['is_admin'] = True
         session.permanent = True
         return redirect(url_for('admin_dashboard'))
