@@ -108,10 +108,10 @@ initial_products_list = [
         "price": "1,19,999",
         "original_price": "1,39,999",
         "category": "Mobiles",
-        "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500",
+        "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=500",
         "images": [
-            "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500",
             "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=500",
+            "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=500",
             "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500"
         ],
         "rating": 4.9,
@@ -365,8 +365,10 @@ try:
             
         db.create_all()
         # Seed Products
-        if Product.query.count() == 0:
-            for p in initial_products_list:
+        # Seed & Sync Products (automatically patches existing DB records with seed changes)
+        for p in initial_products_list:
+            prod = Product.query.filter_by(id=p["id"]).first()
+            if not prod:
                 prod = Product(
                     id=p["id"],
                     name=p["name"],
@@ -384,8 +386,17 @@ try:
                 )
                 prod.images = p["images"]
                 db.session.add(prod)
-            db.session.commit()
-            print("[DATABASE] Seeded 12 default products successfully.")
+            else:
+                prod.name = p["name"]
+                prod.brand = p["brand"]
+                prod.price = p["price"]
+                prod.original_price = p["original_price"]
+                prod.category = p["category"]
+                prod.image = p["image"]
+                prod.images = p["images"]
+                prod.description = p["description"]
+        db.session.commit()
+        print("[DATABASE] Seeded & synchronized products successfully.")
             
         # Seed default user
         if User.query.filter_by(phone="9876543210").first() is None:
