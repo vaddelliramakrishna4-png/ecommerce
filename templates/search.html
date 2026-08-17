@@ -51,7 +51,7 @@
                 {% endif %}
             </div>
             <p class="price" style="color:#2563eb; font-weight:bold; font-size:18px; margin:10px 0;">₹{{ item.price }}</p>
-            <button class="buy-btn" onclick="addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image }}')" style="background:#2563eb; color:white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer; width:100%;">Add To Cart</button>
+            <button class="buy-btn" onclick="handleAddToCartClick(this, '{{ item.name }}', '{{ item.price }}', '{{ item.image }}')" style="background:#2563eb; color:white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer; width:100%;">Add To Cart</button>
         </div>
         {% endfor %}
     </div>

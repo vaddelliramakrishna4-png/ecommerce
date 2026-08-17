@@ -68,13 +68,45 @@
     });
 })();
 
+// Global function to update cart counter badge across all pages
+window.updateCartCount = function() {
+    let countBadges = document.querySelectorAll(".cart-count");
+    if (window.CURRENT_USER_PHONE) {
+        fetch("/api/cart")
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                let totalItems = data.cart.reduce((total, item) => total + item.quantity, 0);
+                countBadges.forEach(badge => {
+                    badge.innerText = totalItems;
+                });
+            }
+        })
+        .catch(err => console.error("Error fetching cart count:", err));
+    } else {
+        let guestCart = JSON.parse(localStorage.getItem("rk_bazaar_cart_guest")) || [];
+        let totalItems = guestCart.reduce((total, item) => total + item.quantity, 0);
+        countBadges.forEach(badge => {
+            badge.innerText = totalItems;
+        });
+    }
+};
+
+// Auto-run cart count retrieval on load and pageshow (fixes back button browser cache)
+document.addEventListener("DOMContentLoaded", () => {
+    window.updateCartCount();
+});
+window.addEventListener("pageshow", (event) => {
+    window.updateCartCount();
+});
+
 // Global function to add items to cart, handling both database storage (logged in) and localStorage (guest)
-window.addToCart = function(name, price, image, quantity = 1) {
+window.addToCart = function(name, price, image, quantity = 1, redirect = false) {
     let cleanPrice = Number(price.toString().replace(/[^0-9]/g, ''));
     const phone = window.CURRENT_USER_PHONE || "";
     
     if (phone) {
-        fetch("/api/cart/add", {
+        return fetch("/api/cart/add", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -84,14 +116,20 @@ window.addToCart = function(name, price, image, quantity = 1) {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                window.location.href = "/cart";
+                window.updateCartCount();
+                if (redirect) {
+                    window.location.href = "/cart";
+                }
+                return data;
             } else {
                 alert("Failed to add item to cart: " + data.message);
+                throw new Error(data.message);
             }
         })
         .catch(err => {
             console.error("Error adding to cart:", err);
             alert("Error adding to cart.");
+            throw err;
         });
     } else {
         let guestCartKey = "rk_bazaar_cart_guest";
@@ -110,8 +148,41 @@ window.addToCart = function(name, price, image, quantity = 1) {
         }
 
         localStorage.setItem(guestCartKey, JSON.stringify(guestCart));
-        window.location.href = "/cart";
+        window.updateCartCount();
+        if (redirect) {
+            window.location.href = "/cart";
+        }
+        return Promise.resolve({ success: true });
     }
+};
+
+// Global click handler to animate add-to-cart buttons
+window.handleAddToCartClick = function(button, name, price, image) {
+    if (button.disabled) return;
+    button.disabled = true;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fa-solid fa-check"></i> Added!';
+    button.style.backgroundColor = '#10b981'; // Green color for success
+    button.style.borderColor = '#10b981';
+    button.style.color = '#ffffff';
+    
+    window.addToCart(name, price, image, 1, false)
+    .then(() => {
+        setTimeout(() => {
+            button.disabled = false;
+            button.innerHTML = originalText;
+            button.style.backgroundColor = '';
+            button.style.borderColor = '';
+            button.style.color = '';
+        }, 1500);
+    })
+    .catch(() => {
+        button.disabled = false;
+        button.innerHTML = originalText;
+        button.style.backgroundColor = '';
+        button.style.borderColor = '';
+        button.style.color = '';
+    });
 };
 
 // Password toggler (conditional to prevent errors on pages without togglePassword)

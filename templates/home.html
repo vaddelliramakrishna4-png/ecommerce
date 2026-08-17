@@ -170,7 +170,7 @@
                     <span>₹{{ item.original_price }}</span>
                     {% endif %}
                 </p>
-                <button class="buy-btn" onclick="addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image }}')">Add To Cart</button>
+                <button class="buy-btn" onclick="handleAddToCartClick(this, '{{ item.name }}', '{{ item.price }}', '{{ item.image }}')">Add To Cart</button>
             </div>
             {% endif %}
         {% endfor %}
@@ -209,7 +209,7 @@
                         <span>({{ item.rating }})</span>
                     </div>
                     <p class="price">₹{{ item.price }}</p>
-                    <button class="buy-btn" onclick="addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image }}')">Add To Cart</button>
+                    <button class="buy-btn" onclick="handleAddToCartClick(this, '{{ item.name }}', '{{ item.price }}', '{{ item.image }}')">Add To Cart</button>
                 </div>
                 {% endif %}
             {% endfor %}
@@ -247,7 +247,7 @@
                     <span>₹{{ item.original_price }}</span>
                     {% endif %}
                 </p>
-                <button class="buy-btn" onclick="addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image }}')">Add To Cart</button>
+                <button class="buy-btn" onclick="handleAddToCartClick(this, '{{ item.name }}', '{{ item.price }}', '{{ item.image }}')">Add To Cart</button>
             </div>
             {% endif %}
         {% endfor %}
@@ -283,7 +283,7 @@
                     <span>₹{{ item.original_price }}</span>
                     {% endif %}
                 </p>
-                <button class="buy-btn" onclick="addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image }}')">Add To Cart</button>
+                <button class="buy-btn" onclick="handleAddToCartClick(this, '{{ item.name }}', '{{ item.price }}', '{{ item.image }}')">Add To Cart</button>
             </div>
             {% endif %}
         {% endfor %}

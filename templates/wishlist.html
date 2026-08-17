@@ -39,17 +39,8 @@
         let wishlist = JSON.parse(localStorage.getItem("rk_bazaar_wishlist")) || [];
         let container = document.getElementById("wishlist-items-container");
 
-        function updateCartCount() {
-            let cart = JSON.parse(localStorage.getItem("rk_bazaar_cart")) || [];
-            let countBadges = document.querySelectorAll(".cart-count");
-            let totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-            countBadges.forEach(badge => {
-                badge.innerText = totalItems;
-            });
-        }
-
         function renderWishlist() {
-            updateCartCount();
+            if (typeof window.updateCartCount === 'function') window.updateCartCount();
             container.innerHTML = "";
 
             if (wishlist.length === 0) {

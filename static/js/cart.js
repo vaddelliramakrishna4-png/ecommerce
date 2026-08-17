@@ -1,25 +1,3 @@
-function updateCartCount() {
-    let countBadges = document.querySelectorAll(".cart-count");
-    if (window.CURRENT_USER_PHONE) {
-        fetch("/api/cart")
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                let totalItems = data.cart.reduce((total, item) => total + item.quantity, 0);
-                countBadges.forEach(badge => {
-                    badge.innerText = totalItems;
-                });
-            }
-        })
-        .catch(err => console.error("Error fetching cart count:", err));
-    } else {
-        let guestCart = JSON.parse(localStorage.getItem("rk_bazaar_cart_guest")) || [];
-        let totalItems = guestCart.reduce((total, item) => total + item.quantity, 0);
-        countBadges.forEach(badge => {
-            badge.innerText = totalItems;
-        });
-    }
-}
 
 function renderCart() {
     updateCartCount();
@@ -156,6 +134,9 @@ function removeItem(name) {
 
 // Page load avvagane renderCart run avvali
 document.addEventListener("DOMContentLoaded", () => {
+    renderCart();
+});
+window.addEventListener("pageshow", (event) => {
     renderCart();
 });
 
