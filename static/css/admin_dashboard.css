@@ -294,6 +294,16 @@ td {
 }
 
 /* Styles for status dropdown container coloring */
+.status-select.order-placed {
+    background: #1e1b4b;
+    color: #c7d2fe;
+    border-color: #4f46e5;
+}
+.status-select.confirmed {
+    background: #3c1502;
+    color: #fed7aa;
+    border-color: #f97316;
+}
 .status-select.processing {
     background: #1e3a8a;
     color: #93c5fd;

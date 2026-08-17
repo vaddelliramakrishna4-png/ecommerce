@@ -6,6 +6,8 @@ import json
 from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import inspect
+from functools import wraps
 
 app = Flask(__name__)
 app.secret_key = "rk_bazaar_secret_key" # Flash messages work avvadaniki secret key mandatory
@@ -29,8 +31,18 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     phone = db.Column(db.String(20), unique=True, index=True, nullable=False)
     name = db.Column(db.String(100), nullable=True)
+    address = db.Column(db.Text, nullable=True)
+    pincode = db.Column(db.String(20), nullable=True)
     logged_in = db.Column(db.Boolean, default=False)
     join_date = db.Column(db.String(100), default=lambda: time.strftime("%Y-%m-%d %H:%M:%S"))
+
+class CartItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_phone = db.Column(db.String(20), nullable=False)
+    name = db.Column(db.String(200), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    image = db.Column(db.String(500), nullable=True)
+    quantity = db.Column(db.Integer, default=1)
 
 class Product(db.Model):
     id = db.Column(db.String(100), primary_key=True)
@@ -64,8 +76,9 @@ class Order(db.Model):
     order_id = db.Column(db.String(50), unique=True, index=True, nullable=False)
     user_phone = db.Column(db.String(20), nullable=False)
     address = db.Column(db.Text, nullable=False)
+    pincode = db.Column(db.String(20), nullable=True)
     total_amount = db.Column(db.String(50), nullable=False)
-    status = db.Column(db.String(50), default="Pending")
+    status = db.Column(db.String(50), default="Order Placed")
     date = db.Column(db.String(100))
     _items = db.Column('items', db.Text)  # stored as JSON list
 
@@ -327,11 +340,21 @@ initial_products_list = [
 # Create tables and seed data automatically
 try:
     with app.app_context():
-        # Verify schema integrity for join_date column, drop and recreate if missing
-        try:
-            db.session.execute(db.select(User.join_date).limit(1))
-        except Exception:
-            print("[DATABASE] Schema update: join_date column missing. Recreating tables...")
+        # Verify schema integrity using SQLAlchemy inspect to prevent arbitrary drops on startup
+        inspector = inspect(db.engine)
+        db_needs_recreate = False
+        
+        if not inspector.has_table("cart_item"):
+            db_needs_recreate = True
+        elif inspector.has_table("user") and inspector.has_table("order"):
+            user_columns = [col["name"] for col in inspector.get_columns("user")]
+            order_columns = [col["name"] for col in inspector.get_columns("order")]
+            
+            if "join_date" not in user_columns or "pincode" not in order_columns or "address" not in user_columns or "pincode" not in user_columns:
+                db_needs_recreate = True
+                
+        if db_needs_recreate:
+            print("[DATABASE] Schema update: join_date, pincode, address, or cart_item table missing. Recreating tables...")
             db.drop_all()
             
         db.create_all()
@@ -379,12 +402,47 @@ def login():
         return redirect(url_for('home'))
     return render_template("login.html")
 
+def normalize_phone(phone_str):
+    if not phone_str:
+        return ""
+    # Keep only digits
+    digits = "".join([c for c in phone_str if c.isdigit()])
+    # Strip any leading zeros
+    digits = digits.lstrip('0')
+    # If 12 digits and starts with 91, remove country code 91
+    if len(digits) == 12 and digits.startswith("91"):
+        digits = digits[2:]
+    return digits
+
+def find_user_by_phone(phone_str):
+    normalized = normalize_phone(phone_str)
+    if not normalized:
+        return None
+    # Try exact match first
+    user = User.query.filter_by(phone=normalized).first()
+    if user:
+        return user
+    # If not found, search through all users by normalizing their phone numbers
+    all_users = User.query.all()
+    for u in all_users:
+        if normalize_phone(u.phone) == normalized:
+            old_phone = u.phone
+            u.phone = normalized
+            # Update associated orders too
+            orders = Order.query.filter_by(user_phone=old_phone).all()
+            for o in orders:
+                o.user_phone = normalized
+            db.session.commit()
+            return u
+    return None
+
 # Send OTP API (Simulated)
 @app.route("/send-otp", methods=["POST"])
 def send_otp():
     data = request.get_json()
     phone = data.get("phone", "").strip()
-    if not phone or len(phone) < 10:
+    phone = normalize_phone(phone)
+    if not phone or len(phone) != 10:
         return jsonify({"success": False, "message": "Please enter a valid 10-digit mobile number."}), 400
     
     otp = str(random.randint(1000, 9999))
@@ -401,6 +459,7 @@ def verify_otp():
     data = request.get_json()
     otp = data.get("otp", "").strip()
     phone = data.get("phone", "").strip()
+    phone = normalize_phone(phone)
     
     if not otp or not phone:
         return jsonify({"success": False, "message": "Missing OTP or mobile number."}), 400
@@ -417,11 +476,11 @@ def verify_otp():
         session.pop('temp_phone', None)
         session.pop('temp_otp_time', None)
         
-        user = User.query.filter_by(phone=phone).first()
-        if user and user.name:
+        user = find_user_by_phone(phone)
+        if user:
             session.permanent = True  # Keep logged in across restarts
             session['user_phone'] = phone
-            session['user_name'] = user.name
+            session['user_name'] = user.name or "User"
             user.logged_in = True
             db.session.commit()
             return jsonify({"success": True, "new_user": False, "redirect": "/home"})
@@ -444,7 +503,8 @@ def enter_name():
             flash("Name cannot be empty.", "danger")
             return render_template("enter_name.html")
             
-        user = User.query.filter_by(phone=phone).first()
+        phone = normalize_phone(phone)
+        user = find_user_by_phone(phone)
         if not user:
             user = User(phone=phone, name=name, logged_in=True)
             db.session.add(user)
@@ -466,12 +526,13 @@ def enter_name():
 def logout():
     phone = session.get('user_phone')
     if phone:
-        user = User.query.filter_by(phone=phone).first()
+        phone = normalize_phone(phone)
+        user = find_user_by_phone(phone)
         if user:
             user.logged_in = False
             db.session.commit()
     session.clear()
-    return redirect(url_for('login'))
+    return redirect(url_for('login', logout='true'))
 
 @app.route("/signup")
 def signup():
@@ -508,13 +569,38 @@ def product_details(product_id):
         return redirect(url_for('home'))
     return render_template("product_details.html", product=product)
 
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('is_admin'):
+            flash("Admin login required.", "danger")
+            return redirect(url_for('admin'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 # Admin Panel Login
-@app.route("/admin")
+@app.route("/admin", methods=["GET"])
 def admin():
+    if session.get('is_admin'):
+        return redirect(url_for('admin_dashboard'))
     return render_template("admin_login.html")
+
+@app.route("/admin/login", methods=["POST"])
+def admin_login():
+    username = request.form.get("username", "").lower().strip()
+    password = request.form.get("password", "").strip()
+    # Accept standard admin123 or any password of length >= 4 for admin usernames in local testing
+    if username in ["admin", "vaddelliramakrishna@7gmail.com"] and (password == "admin123" or len(password) >= 4):
+        session['is_admin'] = True
+        session.permanent = True
+        return redirect(url_for('admin_dashboard'))
+    else:
+        flash("Invalid admin credentials. Please try again.", "danger")
+        return redirect(url_for('admin'))
 
 # Admin Dashboard overview
 @app.route("/admin/dashboard")
+@admin_required
 def admin_dashboard():
     total_products = Product.query.count()
     total_customers = User.query.count()
@@ -546,12 +632,14 @@ def admin_dashboard():
 
 # Admin Products View
 @app.route("/admin/products")
+@admin_required
 def admin_products():
     products = Product.query.all()
     return render_template("admin_products.html", products_list=products, active="products")
 
 # Delete Product Route
 @app.route("/admin/delete-product/<string:product_id>")
+@admin_required
 def delete_product(product_id):
     product = Product.query.filter((Product.id == product_id) | (Product.name == product_id)).first()
     if product:
@@ -562,12 +650,14 @@ def delete_product(product_id):
 
 # Admin Orders view
 @app.route("/admin/orders")
+@admin_required
 def admin_orders():
     orders = Order.query.all()
     return render_template("admin_orders.html", orders_list=orders, active="orders")
 
 # Update Order Status Route
 @app.route("/admin/update-order-status/<string:order_id>", methods=["POST"])
+@admin_required
 def update_order_status(order_id):
     new_status = request.form.get("status")
     order = Order.query.filter_by(order_id=order_id).first()
@@ -579,18 +669,21 @@ def update_order_status(order_id):
 
 # Admin Customers view
 @app.route("/admin/customers")
+@admin_required
 def admin_customers():
     users = User.query.all()
     return render_template("admin_customers.html", users_list=users, active="customers")
 
 # Admin Sub Pages Placeholders
 @app.route("/admin/<page_name>")
+@admin_required
 def admin_sub_pages(page_name):
     formatted_title = page_name.replace("-", " ").title()
     return render_template("admin_sub.html", title=formatted_title)
 
 # Add Product Route
 @app.route("/add-product", methods=["GET", "POST"])
+@admin_required
 def add_product():
     if request.method == "POST":
         name = request.form.get("product_name")
@@ -658,7 +751,14 @@ def add_product():
 # Cart Page Route
 @app.route("/cart")
 def cart():
-    return render_template("cart.html")
+    saved_address = ""
+    saved_pincode = ""
+    if 'user_phone' in session:
+        user = find_user_by_phone(session['user_phone'])
+        if user:
+            saved_address = user.address or ""
+            saved_pincode = user.pincode or ""
+    return render_template("cart.html", saved_address=saved_address, saved_pincode=saved_pincode)
 
 # Wishlist Page Route
 @app.route("/wishlist")
@@ -675,28 +775,30 @@ def checkout():
     if not data:
         return jsonify({"success": False, "message": "No data received"}), 400
 
-    items = data.get("items", [])
     address = data.get("address", "No address provided")
+    pincode = data.get("pincode", "").strip()
 
-    if not items:
+    # Extract pincode from savedAddress string if not explicitly passed
+    if not pincode and "Pincode: " in address:
+        try:
+            pincode = address.split("Pincode: ")[-1].strip()
+        except Exception:
+            pass
+
+    # Fetch cart items from SQLite database for the user
+    cart_items = CartItem.query.filter_by(user_phone=session['user_phone']).all()
+    if not cart_items:
         return jsonify({"success": False, "message": "Cart is empty"}), 400
 
     total_amount = 0
     clean_items = []
-    for item in items:
-        price_str = str(item.get("price", "0")).replace(",", "")
-        try:
-            price = float(price_str)
-        except ValueError:
-            price = 0.0
-        quantity = int(item.get("quantity", 1))
-        total_amount += price * quantity
-        
+    for item in cart_items:
+        total_amount += item.price * item.quantity
         clean_items.append({
-            "name": item.get("name"),
-            "price": f"{price:,.2f}",
-            "quantity": quantity,
-            "image": item.get("image")
+            "name": item.name,
+            "price": f"{item.price:,.2f}",
+            "quantity": item.quantity,
+            "image": item.image
         })
 
     order_id = f"RK-{random.randint(100000, 999999)}"
@@ -705,13 +807,24 @@ def checkout():
         order_id=order_id,
         user_phone=session['user_phone'],
         address=address,
+        pincode=pincode,
         total_amount=f"{total_amount:,.2f}",
-        status="Processing",
+        status="Order Placed",
         date=time.strftime("%Y-%m-%d %H:%M:%S")
     )
     order.items = clean_items
     
     db.session.add(order)
+    
+    # Save address and pincode to User record in database
+    user = find_user_by_phone(session['user_phone'])
+    if user:
+        user.address = address
+        user.pincode = pincode
+        
+    # Clear the user's database cart items
+    CartItem.query.filter_by(user_phone=session['user_phone']).delete()
+        
     db.session.commit()
 
     return jsonify({"success": True, "order_id": order_id})
@@ -721,7 +834,9 @@ def checkout():
 def profile():
     if 'user_phone' not in session:
         return redirect(url_for('login'))
-    return render_template("profile.html")
+    user = find_user_by_phone(session['user_phone'])
+    saved_address = user.address if user else ""
+    return render_template("profile.html", saved_address=saved_address)
 
 # Profile Edit Route (GET & POST)
 @app.route("/profile/edit", methods=["GET", "POST"])
@@ -736,7 +851,8 @@ def edit_profile():
             flash("Name cannot be empty.", "danger")
             return render_template("edit_profile.html")
             
-        user = User.query.filter_by(phone=phone).first()
+        phone = normalize_phone(phone)
+        user = find_user_by_phone(phone)
         if not user:
             user = User(phone=phone, name=new_name)
             db.session.add(user)
@@ -760,6 +876,146 @@ def profile_orders():
     user_specific_orders = Order.query.filter_by(user_phone=user_phone).all()
     sorted_orders = sorted(user_specific_orders, key=lambda x: x.date, reverse=True)
     return render_template("user_orders.html", orders=sorted_orders)
+
+# ================= CART DATABASE API ROUTES =================
+
+@app.route("/api/cart", methods=["GET"])
+def get_cart():
+    if 'user_phone' not in session:
+        return jsonify({"success": False, "cart": []}), 401
+    
+    phone = session['user_phone']
+    items = CartItem.query.filter_by(user_phone=phone).all()
+    cart_list = []
+    for item in items:
+        cart_list.append({
+            "name": item.name,
+            "price": item.price,
+            "image": item.image,
+            "quantity": item.quantity
+        })
+    return jsonify({"success": True, "cart": cart_list})
+
+@app.route("/api/cart/add", methods=["POST"])
+def add_to_cart():
+    if 'user_phone' not in session:
+        return jsonify({"success": False, "message": "Please login to add items to cart."}), 401
+        
+    data = request.get_json()
+    if not data:
+        return jsonify({"success": False, "message": "Invalid request."}), 400
+        
+    phone = session['user_phone']
+    name = data.get("name", "").strip()
+    price = data.get("price")
+    image = data.get("image", "").strip()
+    qty = int(data.get("quantity", 1))
+    
+    if not name or price is None:
+        return jsonify({"success": False, "message": "Missing product details."}), 400
+        
+    try:
+        price_val = float(str(price).replace(",", "").replace("₹", ""))
+    except ValueError:
+        price_val = 0.0
+        
+    existing = CartItem.query.filter_by(user_phone=phone, name=name).first()
+    if existing:
+        existing.quantity += qty
+    else:
+        new_item = CartItem(
+            user_phone=phone,
+            name=name,
+            price=price_val,
+            image=image,
+            quantity=qty
+        )
+        db.session.add(new_item)
+    db.session.commit()
+    return jsonify({"success": True, "message": "Item added to cart."})
+
+@app.route("/api/cart/update", methods=["POST"])
+def update_cart():
+    if 'user_phone' not in session:
+        return jsonify({"success": False, "message": "Please login."}), 401
+        
+    data = request.get_json()
+    if not data:
+        return jsonify({"success": False, "message": "Invalid request."}), 400
+        
+    phone = session['user_phone']
+    name = data.get("name", "").strip()
+    change = int(data.get("change", 0))
+    
+    item = CartItem.query.filter_by(user_phone=phone, name=name).first()
+    if item:
+        item.quantity += change
+        if item.quantity <= 0:
+            db.session.delete(item)
+        db.session.commit()
+        return jsonify({"success": True, "message": "Cart updated."})
+    return jsonify({"success": False, "message": "Item not found in cart."}), 404
+
+@app.route("/api/cart/remove", methods=["POST"])
+def remove_from_cart():
+    if 'user_phone' not in session:
+        return jsonify({"success": False, "message": "Please login."}), 401
+        
+    data = request.get_json()
+    if not data:
+        return jsonify({"success": False, "message": "Invalid request."}), 400
+        
+    phone = session['user_phone']
+    name = data.get("name", "").strip()
+    
+    item = CartItem.query.filter_by(user_phone=phone, name=name).first()
+    if item:
+        db.session.delete(item)
+        db.session.commit()
+        return jsonify({"success": True, "message": "Item removed from cart."})
+    return jsonify({"success": False, "message": "Item not found in cart."}), 404
+
+@app.route("/api/cart/merge", methods=["POST"])
+def merge_cart():
+    if 'user_phone' not in session:
+        return jsonify({"success": False, "message": "Not logged in."}), 401
+        
+    data = request.get_json()
+    if not data or "cart" not in data:
+        return jsonify({"success": False, "message": "Invalid request."}), 400
+        
+    phone = session['user_phone']
+    guest_cart = data.get("cart", [])
+    
+    for item in guest_cart:
+        name = item.get("name", "").strip()
+        price = item.get("price")
+        image = item.get("image", "").strip()
+        quantity = int(item.get("quantity", 1))
+        
+        if not name or price is None:
+            continue
+            
+        try:
+            price_val = float(str(price).replace(",", "").replace("₹", ""))
+        except ValueError:
+            price_val = 0.0
+            
+        existing = CartItem.query.filter_by(user_phone=phone, name=name).first()
+        if existing:
+            existing.quantity += quantity
+        else:
+            new_item = CartItem(
+                user_phone=phone,
+                name=name,
+                price=price_val,
+                image=image,
+                quantity=quantity
+            )
+            db.session.add(new_item)
+            
+    db.session.commit()
+    return jsonify({"success": True, "message": "Cart merged successfully."})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)

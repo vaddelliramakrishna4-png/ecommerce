@@ -74,35 +74,29 @@ if (slides.length > 0 && slidesContainer) {
 
 // ================= SHOPPING CART LOGIC (RK MART) =================
 
-let cart = JSON.parse(localStorage.getItem("rk_bazaar_cart")) || [];
 updateCartCount();
-
-function addToCart(name, price, image) {
-    let cleanPrice = Number(price.toString().replace(/[^0-9]/g, ''));
-    let existingItem = cart.find(item => item.name === name);
-
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        cart.push({
-            name: name,
-            price: cleanPrice,
-            image: image,
-            quantity: 1
-        });
-    }
-
-    localStorage.setItem("rk_bazaar_cart", JSON.stringify(cart));
-    updateCartCount();
-    window.location.href = "/cart";
-}
 
 function updateCartCount() {
     let countBadges = document.querySelectorAll(".cart-count");
-    let totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-    countBadges.forEach(badge => {
-        badge.innerText = totalItems;
-    });
+    if (window.CURRENT_USER_PHONE) {
+        fetch("/api/cart")
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                let totalItems = data.cart.reduce((total, item) => total + item.quantity, 0);
+                countBadges.forEach(badge => {
+                    badge.innerText = totalItems;
+                });
+            }
+        })
+        .catch(err => console.error("Error fetching cart count:", err));
+    } else {
+        let guestCart = JSON.parse(localStorage.getItem("rk_bazaar_cart_guest")) || [];
+        let totalItems = guestCart.reduce((total, item) => total + item.quantity, 0);
+        countBadges.forEach(badge => {
+            badge.innerText = totalItems;
+        });
+    }
 }
 
 

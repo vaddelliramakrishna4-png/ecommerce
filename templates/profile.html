@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        window.CURRENT_USER_PHONE = "{{ session.get('user_phone', '') }}";
+        window.SAVED_ADDRESS_FROM_DB = "{{ saved_address|e if saved_address else '' }}";
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Account - RK Mart</title>

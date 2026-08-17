@@ -33,7 +33,7 @@
                 <p class="subtitle" style="margin-bottom: 20px;">Enter your mobile number to receive a 4-digit OTP</p>
                 <div class="input-group">
                     <i class="fa-solid fa-phone"></i>
-                    <input type="tel" id="phone" placeholder="Enter 10-digit mobile number" required pattern="[0-9]{10}" maxlength="10">
+                    <input type="tel" id="phone" placeholder="Enter 10-digit mobile number" required maxlength="15">
                 </div>
                 <button type="button" onclick="sendOTP()" class="signin-btn" style="margin-top: 10px;">Send OTP</button>
             </div>
@@ -87,11 +87,25 @@
 
             let enteredPhone = "";
 
+            function normalizePhone(phone) {
+                if (!phone) return "";
+                // Keep only digits
+                let digits = phone.replace(/\D/g, '');
+                // Strip leading zeros
+                digits = digits.replace(/^0+/, '');
+                // If 12 digits starting with 91, remove the country code 91
+                if (digits.length === 12 && digits.startsWith('91')) {
+                    digits = digits.substring(2);
+                }
+                return digits;
+            }
+
             function sendOTP() {
                 const phoneInput = document.getElementById("phone");
                 const phone = phoneInput.value.trim();
+                const normalized = normalizePhone(phone);
                 
-                if (!phone || phone.length < 10 || !/^\d+$/.test(phone)) {
+                if (!normalized || normalized.length !== 10) {
                     alert("Please enter a valid 10-digit mobile number.");
                     return;
                 }
@@ -101,12 +115,12 @@
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({ phone: phone })
+                    body: JSON.stringify({ phone: normalized })
                 })
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        enteredPhone = phone; // Save verified phone number globally
+                        enteredPhone = normalized; // Save verified phone number globally
                         document.getElementById("phone-section").style.display = "none";
                         document.getElementById("otp-section").style.display = "block";
                         
@@ -154,6 +168,21 @@
                     alert("Verification failed. Try again.");
                 });
             }
+
+            // Session Security: Wipe sensitive keys on logout query parameter
+            (function() {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('logout') === 'true') {
+                    for (let i = localStorage.length - 1; i >= 0; i--) {
+                        const key = localStorage.key(i);
+                        if (key && (key.startsWith('rk_bazaar_cart') || key.startsWith('rk_bazaar_address') || key.startsWith('rk_bazaar_pincode'))) {
+                            localStorage.removeItem(key);
+                        }
+                    }
+                    // Clean up URL parameter without refreshing the page
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            })();
             </script>
         </div>
     </div>

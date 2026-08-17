@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>window.CURRENT_USER_PHONE = "{{ session.get('user_phone', '') }}";</script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ product.name }} - RK Mart</title>
@@ -471,27 +473,37 @@
         const name = "{{ product.name }}";
         const price = "{{ product.price }}";
         const image = "{{ product.image }}";
-        const qty = parseInt(document.getElementById('product-qty').value);
+        const qty = parseInt(document.getElementById('product-qty').value) || 1;
 
         let cleanPrice = Number(price.replace(/[^0-9]/g, ''));
-        let cartList = JSON.parse(localStorage.getItem("rk_bazaar_cart")) || [];
         
-        let existingItem = cartList.find(item => item.name === name);
-        if (existingItem) {
-            existingItem.quantity += qty;
+        if (window.CURRENT_USER_PHONE) {
+            fetch("/api/cart/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ name: name, price: cleanPrice, image: image, quantity: qty })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = "/cart";
+                }
+            })
+            .catch(err => console.error("Error detailed add:", err));
         } else {
-            cartList.push({
-                name: name,
-                price: cleanPrice,
-                image: image,
-                quantity: qty
-            });
+            let guestCartKey = "rk_bazaar_cart_guest";
+            let guestCart = JSON.parse(localStorage.getItem(guestCartKey)) || [];
+            let existingItem = guestCart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity += qty;
+            } else {
+                guestCart.push({ name: name, price: cleanPrice, image: image, quantity: qty });
+            }
+            localStorage.setItem(guestCartKey, JSON.stringify(guestCart));
+            window.location.href = "/cart";
         }
-        
-        localStorage.setItem("rk_bazaar_cart", JSON.stringify(cartList));
-        
-        // Show success and redirect to cart
-        window.location.href = "/cart";
     }
 
     function buyNowDetailed() {

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>window.CURRENT_USER_PHONE = "{{ session.get('user_phone', '') }}";</script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Results - RK Mart</title>

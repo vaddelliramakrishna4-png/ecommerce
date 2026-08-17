@@ -50,9 +50,16 @@
                         <span>Placed on: {{ order.date }}</span>
                     </div>
                     <div>
-                        {% set status_class = order.status|lower %}
+                        {% set status_class = order.status|lower|replace(" ", "-") %}
                         <span class="status-badge {{ status_class }}">
-                            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 11px;"></i> {{ order.status }}
+                            {% if status_class in ['processing', 'pending'] %}
+                            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 11px;"></i>
+                            {% elif status_class in ['order-placed', 'confirmed', 'delivered'] %}
+                            <i class="fa-solid fa-circle-check" style="font-size: 11px;"></i>
+                            {% else %}
+                            <i class="fa-solid fa-circle-xmark" style="font-size: 11px;"></i>
+                            {% endif %}
+                            {{ order.status }}
                         </span>
                     </div>
                 </div>

@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        window.CURRENT_USER_PHONE = "{{ session.get('user_phone', '') }}";
+        window.SAVED_ADDRESS_FROM_DB = "{{ saved_address|e if saved_address else '' }}";
+        window.SAVED_PINCODE_FROM_DB = "{{ saved_pincode|e if saved_pincode else '' }}";
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Cart - RK Mart</title>
@@ -84,9 +90,13 @@
                     <label style="display:block; font-size:13px; font-weight:bold; margin-bottom:5px; color:#334155;">Phone Number</label>
                     <input type="text" id="phone" required style="width:100%; padding:9px; border:1px solid #cbd5e1; border-radius:6px; box-sizing:border-box;">
                 </div>
-                <div style="margin-bottom:15px;">
+                <div style="margin-bottom:12px;">
                     <label style="display:block; font-size:13px; font-weight:bold; margin-bottom:5px; color:#334155;">Complete Address</label>
                     <textarea id="fullAddress" required rows="3" style="width:100%; padding:9px; border:1px solid #cbd5e1; border-radius:6px; box-sizing:border-box;"></textarea>
+                </div>
+                <div style="margin-bottom:15px;">
+                    <label style="display:block; font-size:13px; font-weight:bold; margin-bottom:5px; color:#334155;">Pincode / Postal Code</label>
+                    <input type="text" id="pincode" required pattern="[0-9]{6}" title="Please enter a valid 6-digit Pincode" placeholder="6-digit Pincode" style="width:100%; padding:9px; border:1px solid #cbd5e1; border-radius:6px; box-sizing:border-box;">
                 </div>
                 
                 <div style="display:flex; justify-content:flex-end; gap:10px;">
