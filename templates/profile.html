@@ -150,7 +150,26 @@
         <a href="/home"><i class="fa-solid fa-layer-group"></i><span>Categories</span></a>
         <a href="/wishlist"><i class="fa-solid fa-heart"></i><span>Wishlist</span></a>
         <a href="/cart"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></a>
-        <a href="/profile/orders"><i class="fa-solid fa-clock-rotate-left"></i><span>Orders</span></a>
+        {% if session.get('user_phone') %}
+            <div style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1;">
+                <button onclick="toggleMobileUserMenu(event)" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #2563eb; cursor: pointer; padding: 0; outline: none; font-family: inherit;">
+                    <div style="width: 24px; height: 24px; background: #2563eb; color: #ffffff; border-radius: 50%; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; margin-bottom: 3px;">
+                        {{ session.get('user_name', 'U')[0]|upper }}
+                    </div>
+                    <span style="font-size: 10px; display: block; font-weight: 600;">Account</span>
+                </button>
+                <div id="mobileUserDropdownMenu" style="display: none; position: absolute; bottom: 60px; right: 10px; background: #ffffff; min-width: 150px; box-shadow: 0 -4px 12px rgba(0,0,0,0.15); border-radius: 8px; z-index: 1000; overflow: hidden; border: 1px solid #e2e8f0;">
+                    <a href="/profile" style="display: block; padding: 10px 15px; color: #334155; text-decoration: none; font-size: 14px; font-weight: 500; transition: background 0.2s; text-align: left; border-bottom: 1px solid #f1f5f9;">
+                        <i class="fa-solid fa-user" style="margin-right: 8px; color: #2563eb;"></i> Profile
+                    </a>
+                    <a href="/logout" style="display: block; padding: 10px 15px; color: #ef4444; text-decoration: none; font-size: 14px; font-weight: 500; transition: background 0.2s; text-align: left;">
+                        <i class="fa-solid fa-right-from-bracket" style="margin-right: 8px;"></i> Log Out
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            <a href="{{ url_for('login') }}"><i class="fa-solid fa-user"></i><span>Login</span></a>
+        {% endif %}
     </div>
 
     <script>

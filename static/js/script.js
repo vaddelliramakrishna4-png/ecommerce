@@ -131,3 +131,27 @@ if (togglePassword && password) {
         }
     });
 }
+
+// User menu dropdown togglers (desktop & mobile)
+window.toggleUserMenu = function(event) {
+    event.stopPropagation();
+    const menu = document.getElementById('userDropdownMenu');
+    if (menu) {
+        menu.style.display = (menu.style.display === 'none' || !menu.style.display) ? 'block' : 'none';
+    }
+};
+
+window.toggleMobileUserMenu = function(event) {
+    event.stopPropagation();
+    const menu = document.getElementById('mobileUserDropdownMenu');
+    if (menu) {
+        menu.style.display = (menu.style.display === 'none' || !menu.style.display) ? 'block' : 'none';
+    }
+};
+
+document.addEventListener('click', () => {
+    const desktopMenu = document.getElementById('userDropdownMenu');
+    if (desktopMenu) desktopMenu.style.display = 'none';
+    const mobileMenu = document.getElementById('mobileUserDropdownMenu');
+    if (mobileMenu) mobileMenu.style.display = 'none';
+});
