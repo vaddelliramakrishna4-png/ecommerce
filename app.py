@@ -131,8 +131,8 @@ initial_products_list = [
         "image": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500",
         "images": [
             "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500",
-            "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=500",
-            "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500"
+            "https://images.unsplash.com/photo-1610945415295-d9b21034b5c1?w=500",
+            "https://images.unsplash.com/photo-1592890288564-76628a30a657?w=500"
         ],
         "rating": 4.8,
         "rating_count": 9850,
@@ -152,7 +152,7 @@ initial_products_list = [
         "images": [
             "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=500",
             "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=500",
-            "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=500"
+            "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500"
         ],
         "rating": 4.7,
         "rating_count": 4210,
