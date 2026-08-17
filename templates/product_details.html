@@ -350,8 +350,10 @@
         <a href="/wishlist"><i class="fa-solid fa-heart"></i> Wishlist</a>
         <a href="/cart"><i class="fa-solid fa-cart-shopping"></i> Cart <span class="cart-count">0</span></a>
         <a href="/profile"><i class="fa-solid fa-clock-rotate-left"></i> My Orders</a>
-        {% if session.get('user_name') %}
-            <a href="/profile"><i class="fa-solid fa-user"></i> {{ session.get('user_name') }}</a>
+        {% if session.get('user_phone') %}
+            <a href="/profile" class="user-avatar-nav" title="View Profile Details" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #ffffff; color: #2563eb; border-radius: 50%; font-weight: 700; text-decoration: none; font-size: 15px; border: 2px solid #2563eb; margin-left: 10px; transition: transform 0.2s;">
+                {{ session.get('user_name', 'U')[0]|upper }}
+            </a>
             <a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
         {% else %}
             <a href="{{ url_for('login') }}"><i class="fa-solid fa-user"></i> Login</a>
