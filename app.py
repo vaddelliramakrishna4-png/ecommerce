@@ -15,12 +15,18 @@ app.secret_key = "rk_bazaar_secret_key" # Flash messages work avvadaniki secret 
 # 1. Database & Folder configuration
 UPLOAD_FOLDER = 'static/images/products'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///store.db'
+
+is_vercel = os.environ.get('VERCEL') == '1'
+if is_vercel:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/store.db'
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///store.db'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 
-# Folder lekapothe automatic ga create chestundi
-if not os.path.exists(UPLOAD_FOLDER):
+# Folder lekapothe automatic ga create chestundi (not run on Vercel due to read-only filesystem)
+if not is_vercel and not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 db = SQLAlchemy(app)
