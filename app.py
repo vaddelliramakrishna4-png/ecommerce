@@ -409,6 +409,15 @@ except Exception as e:
 
 # ================= ROUTES IMPLEMENTATION =================
 
+@app.after_request
+def add_header(response):
+    # Disable caching for auth, profile, and cart routes to prevent stale logins/back-button storage exposure
+    if request.path in ['/login', '/enter-name', '/profile', '/profile/orders', '/cart', '/checkout'] or request.path.startswith('/api/'):
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
+
 @app.route("/")
 def root():
     return render_template("login.html")
