@@ -252,7 +252,7 @@ initial_products_list = [
         "images": [
             "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500",
             "https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=500",
-            "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=500"
+            "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=500"
         ],
         "rating": 4.7,
         "rating_count": 11240,
@@ -312,7 +312,7 @@ initial_products_list = [
         "images": [
             "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500",
             "https://images.unsplash.com/photo-1616440347437-b1c73416efc2?w=500",
-            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500"
+            "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=500"
         ],
         "rating": 4.9,
         "rating_count": 3120,
