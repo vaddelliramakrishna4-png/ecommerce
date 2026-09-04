@@ -46,6 +46,8 @@
             let guestCartKey = "rk_bazaar_cart_guest";
             let guestCart = JSON.parse(ogGet.call(localStorage, guestCartKey)) || [];
             if (guestCart.length > 0) {
+                // Clear immediately to prevent multiple merges across concurrent scripts or tabs
+                ogRemove.call(localStorage, guestCartKey);
                 fetch("/api/cart/merge", {
                     method: "POST",
                     headers: {
@@ -56,7 +58,6 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        ogRemove.call(localStorage, guestCartKey);
                         if (typeof updateCartCount === 'function') {
                             updateCartCount();
                         }
@@ -97,11 +98,21 @@ document.addEventListener("DOMContentLoaded", () => {
     window.updateCartCount();
 });
 window.addEventListener("pageshow", (event) => {
-    window.updateCartCount();
+    if (event.persisted) {
+        window.updateCartCount();
+    }
 });
+
+// In-flight concurrency lock to completely prevent double-click / duplicate additions
+const activeCartOps = new Set();
 
 // Global function to add items to cart, handling both database storage (logged in) and localStorage (guest)
 window.addToCart = function(name, price, image, quantity = 1, redirect = false) {
+    if (activeCartOps.has(name)) {
+        return Promise.resolve({ success: true, message: "Add in progress" });
+    }
+    activeCartOps.add(name);
+
     let cleanPrice = Number(price.toString().replace(/[^0-9]/g, ''));
     const phone = window.CURRENT_USER_PHONE || "";
     
@@ -130,6 +141,11 @@ window.addToCart = function(name, price, image, quantity = 1, redirect = false) 
             console.error("Error adding to cart:", err);
             alert("Error adding to cart.");
             throw err;
+        })
+        .finally(() => {
+            setTimeout(() => {
+                activeCartOps.delete(name);
+            }, 300);
         });
     } else {
         let guestCartKey = "rk_bazaar_cart_guest";
@@ -149,6 +165,7 @@ window.addToCart = function(name, price, image, quantity = 1, redirect = false) 
 
         localStorage.setItem(guestCartKey, JSON.stringify(guestCart));
         window.updateCartCount();
+        activeCartOps.delete(name);
         if (redirect) {
             window.location.href = "/cart";
         }

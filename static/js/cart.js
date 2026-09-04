@@ -7,11 +7,10 @@ function renderCart() {
     
     if (!container) return;
 
-    container.innerHTML = "";
-
     function displayCartItems(items) {
+        container.innerHTML = "";
         let total = 0;
-        if (items.length === 0) {
+        if (!items || items.length === 0) {
             container.innerHTML = `
                 <div class="empty-cart" style="text-align:center; padding: 50px;">
                     <i class="fa-solid fa-cart-shopping" style="font-size: 60px; color: #ccc; margin-bottom:15px;"></i>
@@ -24,7 +23,23 @@ function renderCart() {
             return;
         }
 
+        // Consolidate any duplicate item entries by name
+        let consolidated = [];
         items.forEach((item) => {
+            let existing = consolidated.find(c => c.name === item.name);
+            if (existing) {
+                existing.quantity = (existing.quantity || 1) + (item.quantity || 1);
+            } else {
+                consolidated.push({
+                    name: item.name,
+                    price: item.price,
+                    image: item.image,
+                    quantity: item.quantity || 1
+                });
+            }
+        });
+
+        consolidated.forEach((item) => {
             let cleanPrice = parseFloat(item.price.toString().replace(/,/g, '')) || 0;
             let quantity = item.quantity || 1;
             let itemTotal = cleanPrice * quantity;
@@ -137,7 +152,9 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCart();
 });
 window.addEventListener("pageshow", (event) => {
-    renderCart();
+    if (event.persisted) {
+        renderCart();
+    }
 });
 
 // ================= CHECKOUT & ADDRESS LOGIC =================

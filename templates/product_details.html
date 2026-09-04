@@ -525,12 +525,18 @@
     }
 
     function buyNowDetailed() {
+        const btn = document.querySelector('.btn-buy');
+        if (btn && btn.disabled) return;
+        if (btn) btn.disabled = true;
         const name = "{{ product.name }}";
         const price = "{{ product.price }}";
         const image = "{{ product.image }}";
         const qty = parseInt(document.getElementById('product-qty').value) || 1;
         
-        window.addToCart(name, price, image, qty, true);
+        window.addToCart(name, price, image, qty, true)
+        .catch(() => {
+            if (btn) btn.disabled = false;
+        });
     }
 </script>
 </body>

@@ -78,7 +78,7 @@
         }
 
         function moveToCart(name, price, image) {
-            let cleanPrice = Number(price.replace(/[^0-9]/g, ''));
+            let cleanPrice = Number(price.toString().replace(/[^0-9]/g, ''));
             
             function finishMove() {
                 // Wishlist nunchi remove cheyyadam
@@ -88,33 +88,13 @@
                 renderWishlist();
             }
 
-            if (window.CURRENT_USER_PHONE) {
-                fetch("/api/cart/add", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ name: name, price: cleanPrice, image: image })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        finishMove();
-                    }
-                })
-                .catch(err => console.error("Error moving to cart:", err));
-            } else {
-                let guestCartKey = "rk_bazaar_cart_guest";
-                let guestCart = JSON.parse(localStorage.getItem(guestCartKey)) || [];
-                let existingItem = guestCart.find(item => item.name === name);
-                if (existingItem) {
-                    existingItem.quantity += 1;
-                } else {
-                    guestCart.push({ name: name, price: cleanPrice, image: image, quantity: 1 });
-                }
-                localStorage.setItem(guestCartKey, JSON.stringify(guestCart));
+            window.addToCart(name, cleanPrice, image, 1, false)
+            .then(() => {
                 finishMove();
-            }
+            })
+            .catch(err => {
+                console.error("Error moving to cart:", err);
+            });
         }
 
         renderWishlist();

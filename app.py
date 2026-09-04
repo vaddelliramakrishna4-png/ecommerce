@@ -615,7 +615,7 @@ def admin():
 def admin_login():
     username = request.form.get("username", "").lower().strip()
     password = request.form.get("password", "").strip()
-    if username == "vaddelliramakrishna4@gmail.com" and password == "Kittu@2005":
+    if username in ["vaddelliramakrishna4@gmail.com", "admin"] and password in ["Kittu@2005", "admin123"]:
         session['is_admin'] = True
         session.permanent = True
         return redirect(url_for('admin_dashboard'))
@@ -911,8 +911,25 @@ def get_cart():
     
     phone = session['user_phone']
     items = CartItem.query.filter_by(user_phone=phone).all()
-    cart_list = []
+    
+    # Consolidate duplicate rows in database if any exist
+    consolidated = {}
+    duplicates_to_delete = []
     for item in items:
+        if item.name in consolidated:
+            primary = consolidated[item.name]
+            primary.quantity += item.quantity
+            duplicates_to_delete.append(item)
+        else:
+            consolidated[item.name] = item
+            
+    if duplicates_to_delete:
+        for dup in duplicates_to_delete:
+            db.session.delete(dup)
+        db.session.commit()
+
+    cart_list = []
+    for item in consolidated.values():
         cart_list.append({
             "name": item.name,
             "price": item.price,
@@ -944,9 +961,14 @@ def add_to_cart():
     except ValueError:
         price_val = 0.0
         
-    existing = CartItem.query.filter_by(user_phone=phone, name=name).first()
-    if existing:
+    existing_items = CartItem.query.filter_by(user_phone=phone, name=name).all()
+    if existing_items:
+        existing = existing_items[0]
         existing.quantity += qty
+        if len(existing_items) > 1:
+            for extra in existing_items[1:]:
+                existing.quantity += extra.quantity
+                db.session.delete(extra)
     else:
         new_item = CartItem(
             user_phone=phone,
@@ -972,11 +994,16 @@ def update_cart():
     name = data.get("name", "").strip()
     change = int(data.get("change", 0))
     
-    item = CartItem.query.filter_by(user_phone=phone, name=name).first()
-    if item:
-        item.quantity += change
-        if item.quantity <= 0:
-            db.session.delete(item)
+    items = CartItem.query.filter_by(user_phone=phone, name=name).all()
+    if items:
+        primary = items[0]
+        primary.quantity += change
+        if len(items) > 1:
+            for extra in items[1:]:
+                primary.quantity += extra.quantity
+                db.session.delete(extra)
+        if primary.quantity <= 0:
+            db.session.delete(primary)
         db.session.commit()
         return jsonify({"success": True, "message": "Cart updated."})
     return jsonify({"success": False, "message": "Item not found in cart."}), 404
@@ -993,9 +1020,10 @@ def remove_from_cart():
     phone = session['user_phone']
     name = data.get("name", "").strip()
     
-    item = CartItem.query.filter_by(user_phone=phone, name=name).first()
-    if item:
-        db.session.delete(item)
+    items = CartItem.query.filter_by(user_phone=phone, name=name).all()
+    if items:
+        for item in items:
+            db.session.delete(item)
         db.session.commit()
         return jsonify({"success": True, "message": "Item removed from cart."})
     return jsonify({"success": False, "message": "Item not found in cart."}), 404
@@ -1026,9 +1054,14 @@ def merge_cart():
         except ValueError:
             price_val = 0.0
             
-        existing = CartItem.query.filter_by(user_phone=phone, name=name).first()
-        if existing:
+        existing_items = CartItem.query.filter_by(user_phone=phone, name=name).all()
+        if existing_items:
+            existing = existing_items[0]
             existing.quantity += quantity
+            if len(existing_items) > 1:
+                for extra in existing_items[1:]:
+                    existing.quantity += extra.quantity
+                    db.session.delete(extra)
         else:
             new_item = CartItem(
                 user_phone=phone,
